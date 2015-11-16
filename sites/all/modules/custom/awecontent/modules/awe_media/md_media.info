@@ -1,0 +1,5 @@
+name = MD Media
+description = Allows upload and manage files in Drupal site
+core = 7.x
+version = 7.x-1.0
+package = MegaDrupal

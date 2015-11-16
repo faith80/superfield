@@ -1,0 +1,81 @@
+.builder-content-icon-style-rounded, 
+.builder-content-icon-style-rounded .builder-element-icon-link{
+  border-radius: 50%;
+}
+.builder-content-icon-style-rounded-less, 
+.builder-content-icon-style-rounded-less .builder-element-icon-link{
+  border-radius: 5px;
+}
+.builder-content-icon-style-rounded-outline , .builder-content-icon-style-rounded-outline .builder-element-icon-link{
+  border-radius: 50%;
+}
+.builder-content-icon-inner{
+  width: 4em;
+  height: 4em;
+  line-height: 2.15em !important;
+  max-width: 100% !important;
+  border: 2px solid transparent;
+  box-sizing: content-box;
+  display: inline-block;
+  position: relative;
+  text-align: center;
+
+}
+.builder-content-icon-inner .builder-element-icon{
+  font-size: 2.15em;
+  display: inline-block;
+  font-feature-settings: normal;
+  font-kerning: auto;
+  font-language-override: normal;
+  font-size: 2.15em;
+  font-size-adjust: none;
+  font-stretch: normal;
+  font-style: normal;
+  font-synthesis: weight style;
+  font-variant: normal;
+  font-weight: normal;
+  left: 50%;
+  line-height: 1 !important;
+  position: absolute;
+  text-rendering: auto;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+}
+.builder-content-icon-inner .builder-element-icon-link{
+  border: medium none;
+  box-sizing: content-box;
+  display: block;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.builder-content-icon-inner.builder-content-icon-size-sm{
+  height: 3.15em;
+  width: 3.15em;
+  line-height: 1.6em;
+  max-width: 100%;
+}
+.builder-content-icon-inner.builder-content-icon-size-sm .builder-element-icon{
+  font-size: 1.6em;
+}
+.builder-content-icon-inner.builder-content-icon-size-lg{
+  height: 5em;
+  width: 5em;
+  line-height: 2.85em;
+  max-width: 100%;
+}
+.builder-content-icon-inner.builder-content-icon-size-lg .builder-element-icon{
+  font-size: 2.85em;
+}
+.builder-content-icon-inner.builder-content-icon-size-xl{
+  height: 7.15em;
+  width: 7.15em;
+  line-height: 5em;
+  max-width: 100%;
+}
+.builder-content-icon-inner.builder-content-icon-size-xl .builder-element-icon{
+  font-size: 5em;
+}

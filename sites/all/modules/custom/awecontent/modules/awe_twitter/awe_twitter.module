@@ -1,0 +1,178 @@
+<?php
+
+/**
+ * Implements hook_awecontent_objects_info().
+ */
+function awe_twitter_awecontent_objects_info() {
+  return array(
+    'twitter' => array(
+      'js' => array(
+        drupal_get_path('module', 'awe_twitter') . '/js/awecontent-twitter-item.js' => array('weight' => 14)
+      ),
+      'css' => array(),
+      'theme_callback' => 'awe_twitter',
+    )
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function awe_twitter_menu() {
+  $items['awe-content/twitter'] = array(
+    'page callback' => 'ac_twitter_get_data',
+    'access arguments' => array('access content'),
+    'file' => 'twitter.admin.inc',
+    'file path' => drupal_get_path('module', 'awe_twitter') . '/includes',
+    'type' => MENU_CALLBACK
+  );
+  return $items;
+}
+
+function awe_twitter_form_ac_configurations_form_alter(&$form, &$form_state, $form_id) {
+  $form['twitter'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Twitter settings'),
+    '#weight' => 5,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    '#description' => 'First, you need a consumer key and secret keys. Get one from <a href="https://apps.twitter.com/" target="_blank">dev.twitter.com/apps</a>.'
+  );
+  $form['twitter']['consumer_key'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Consumer key'),
+    '#default_value' => variable_get('consumer_key', '14XiEso9DKiEkhdejwvfLA'),
+    '#size' => 60,
+    '#maxlength' => 128,
+    '#required' => TRUE,
+  );
+  $form['twitter']['consumer_secret'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Consumer Secret'),
+    '#default_value' => variable_get('consumer_secret', 'K1IcprfP7ZtHW9SM9pag9YWJ0jUWi6vAWZ3hX2FvspI'),
+    '#size' => 60,
+    '#maxlength' => 128,
+    '#required' => TRUE,
+  );
+  $form['twitter']['access_token'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Access Token'),
+    '#default_value' => variable_get('access_token', '234626957-zSPIRl4nvdXvzffaXjZUZNVFxleenIQjOS2B749p'),
+    '#size' => 60,
+    '#maxlength' => 128,
+    '#required' => TRUE,
+
+  );
+  $form['twitter']['access_secret'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Access secret'),
+    '#default_value' => variable_get('access_secret', 'PAiDJWzd1nqVm2pzMnnFeY5OW1OiCieXSqkivO6PUM'),
+    '#size' => 60,
+    '#maxlength' => 128,
+    '#required' => TRUE,
+  );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function awe_twitter_block_info() {
+  $blocks['awe_twitter'] = array(
+    'info' => t('AWE Twitter'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function awe_twitter_block_view($delta = '') {
+  $block = array();
+  switch ($delta) {
+    case 'awe_twitter':
+      drupal_add_js(drupal_get_path('module', 'awe_twitter') . '/js/awe-twitter.js');
+      $block['subject'] = t('AWE Twitter');
+      $block['content'] = array(
+        '#type' => 'markup',
+        '#markup' => '<div id="block-awe-twitter"></div>',
+      );
+      break;
+  }
+  return $block;
+}
+/**
+ * Implements hook_theme().
+ */
+function awe_twitter_theme() {
+  return array(
+    'awe_twitter' => array(
+      'path' => drupal_get_path('module', 'awe_twitter'),
+      'template' => 'awe-twitter',
+      'variables' => array(
+        'settings' => NULL,
+        'class_random' => NULL,
+        'node' => NULL
+      ),
+    ),
+  );
+}
+
+function awe_twitter_preprocess_awe_twitter(&$vars) {
+  drupal_add_js(drupal_get_path('module', 'awe_twitter') . '/js/awe-twitter.js');
+  $vars['classes_array'][] = $vars['class_random'];
+  $settings = $vars['settings'];
+  $vars['twitter_pager'] = $settings['navigation'] == 'none' ? 'false' : 'true';
+  $vars['twitter_autoplay'] = $settings['timeAuto'] != '-1' ? $settings['timeAuto'] : 'false';
+  $nid = $vars['node']->nid;
+  $style_name = 'style_' . $nid;
+  $twitterSettings = array(
+    'number' => $settings['numberTwitter'],
+    'dateFormat' => $settings['dateFormat'],
+    'template' => $settings['template']
+  );
+  $slider = $settings['sliderTwitter'];
+  $twitterID = $settings['twitterID'] != '' ? drupal_html_id($settings['twitterID']) : FALSE;
+  $vars['id'] = $twitterID;
+  $twitterClass = $settings['twitterClass'];
+  $attributes = array(
+    'enable' => $settings['customEnableAttributes'],
+    'attributes' => $settings['customDataAttributes']
+  );
+  $animations = array(
+    'enable' => $settings['customEnableAnimations'],
+    'animations' => $settings['customDataAnimations']
+  );
+
+  $responsive = array(
+    'lgResponsive' => $settings['lgResponsive'],
+    'xsResponsive' => $settings['xsResponsive'],
+    'mediumResponsive' => $settings['mediumResponsive'],
+    'smResponsive' => $settings['smResponsive']
+  );
+  $boxModel = $settings['boxModelSettings'];
+  $nodeStyle = _ac_render_item_id_tag($twitterID, $twitterClass, $vars['class_random']);
+  if ($nodeStyle['isChange']) {
+    $twitterClass = $nodeStyle['isChange'];
+  }
+  $nodeStyle = $nodeStyle['result'];
+  $slider = $slider ? ' awe-twitter-slider' : '';
+
+  //process data for item Twitter
+  $boxModel = _ac_render_item_box_model_settings($boxModel);
+  $attributes = _ac_render_item_attributes_settings($attributes);
+  $animations = _ac_render_item_animations_settings($animations);
+  $responsive = _ac_render_item_responsive_settings($responsive);
+  $class = $twitterClass . $slider . $responsive;
+
+  $vars['classes_array'][] = $class;
+  $vars['classes_array'][] = 'pager-' . $settings['navigation'];
+  $vars['attributes_array'] = array_merge($vars['attributes_array'], $attributes);
+  $animations !== '' ? $vars['attributes_array']['data-animation'] = $animations : '';
+  $style = render_css($nodeStyle, array($boxModel));
+  drupal_add_css( $style, array('type' => 'inline', 'group' => CSS_THEME));
+}
+
+
+

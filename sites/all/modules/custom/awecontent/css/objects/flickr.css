@@ -1,0 +1,58 @@
+.awe-flickr {
+    overflow: hidden;
+}
+.awe-flickr > .awe-flickr-list {
+    margin: -2.5px;
+    padding: 0;
+    overflow: hidden;
+}
+.awe-flickr > .awe-flickr-list > .awe-item-flickr {
+    width: 33.33333333%;
+    float: left;
+    display: block;
+    position: relative;
+}
+.awe-flickr > .awe-flickr-list > .awe-item-flickr a {
+    display: block;
+    padding: 0 2px;
+}
+.awe-flickr > .awe-flickr-list > .awe-item-flickr a img {
+    width: 100%;
+    height: auto;
+}
+.awe-flickr.type-column-1 > .awe-flickr-list > .awe-item-flickr {
+    width: 100%;
+}
+.awe-flickr.type-column-2 > .awe-flickr-list > .awe-item-flickr {
+    width: 50%;
+}
+.awe-flickr.type-column-3 > .awe-flickr-list > .awe-item-flickr {
+    width: 33.33333333%;
+}
+.awe-flickr.type-column-4 > .awe-flickr-list > .awe-item-flickr {
+    width: 25%;
+}
+.awe-flickr.type-column-5 > .awe-flickr-list > .awe-item-flickr {
+    width: 20%;
+}
+.awe-flickr.type-column-6 > .awe-flickr-list > .awe-item-flickr {
+    width: 16.66666667%;
+}
+.awe-flickr.type-column-7 > .awe-flickr-list > .awe-item-flickr {
+    width: 14.285714%;
+}
+.awe-flickr.type-column-8 > .awe-flickr-list > .awe-item-flickr {
+    width: 12.5%;
+}
+.awe-flickr.type-column-9 > .awe-flickr-list > .awe-item-flickr {
+    width: 11.11111111%;
+}
+.awe-flickr.type-column-10 > .awe-flickr-list > .awe-item-flickr {
+    width: 10%;
+}
+.awe-flickr.type-column-11 > .awe-flickr-list > .awe-item-flickr {
+    width: 9.09090909%;
+}
+.awe-flickr.type-column-12 > .awe-flickr-list > .awe-item-flickr {
+    width: 8.33333333%;
+}

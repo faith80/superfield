@@ -1,0 +1,34 @@
+.awe-icon {
+    display: block;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+}
+
+.awe-icon i {
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+}
+.awe-icon .awe-icon-container {
+    display: inline-block;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+}
+.awe-icon.awe-icon-circle .awe-icon-container {
+    color: #ffffff;
+    border-radius: 50%;
+    text-align: center;
+}
+.awe-icon.awe-icon-square .awe-icon-container {
+    color: #ffffff;
+    text-align: center;
+    border-radius: 0;
+}
+.awe-icon.awe-icon-plain .awe-icon-container {
+    text-align: center;
+    background: none !important;
+}

@@ -1,0 +1,40 @@
+.page-templates, .section-templates {margin: 0 20px}
+#awe-themer-export-form .templates-list {
+    list-style: none;
+    position: relative;
+    margin: 0;
+}
+.template-item {
+    border: 1px solid #b0b0b0;
+    float: left;
+    list-style: outside none none;
+    padding: 10px;
+    margin: 0 20px 20px 0;
+    position: relative;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+
+}
+.template-item img {
+    width: 250px;
+}
+.template-item .export-template {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+}
+
+a#export-templates {
+    background-color: #e0e0d8;
+    border: 1px solid #b0b0b0;
+    border-radius: 3px;
+    display: block;
+    padding: 5px 10px;
+    width: 42px;
+}
+a#export-templates:hover {
+    text-decoration: none;
+}

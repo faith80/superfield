@@ -1,0 +1,20 @@
+<?php
+/**
+ * File: awecontent_permission.install
+ * Author : MegaDrupal
+ * Website: http://megadrupal.com/
+ */
+
+/**
+ * implements hook_install
+ */
+function awecontent_permission_install() {
+	awecontent_role_permission();
+}
+
+/**
+ * implements hook_uninstall
+ */
+function awecontent_permission_uninstall() {
+	variable_del('awecontent_permissions');
+}

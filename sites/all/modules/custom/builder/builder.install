@@ -1,0 +1,141 @@
+<?php
+
+function builder_field_schema($field) {
+  return array(
+      'columns' => array(
+          'bid' => array(
+              'description' => 'The {builder_data}.bid being referenced in this field.',
+              'type' => 'int',
+              'not null' => FALSE,
+              'unsigned' => TRUE,
+          ),
+      ),
+      'indexes' => array(
+          'bid' => array('bid'),
+      ),
+      'foreign keys' => array(
+          'bid' => array(
+              'table' => 'builder_data',
+              'columns' => array('bid' => 'bid'),
+          ),
+      ),
+  );
+}
+
+function builder_schema() {
+
+  $schema['builder_data'] = array(
+      'description' => 'Store builder data for builder Field.',
+      'fields' => array(
+          'bid' => array(
+              'description' => 'builder ID',
+              'type' => 'serial',
+              'not null' => TRUE,
+          ),
+          'uid' => array(
+              'description' => 'User ID',
+              'type' => 'int',
+              'not null' => TRUE,
+          ),
+          'entity_id' => array(
+              'description' => 'The entity ID using this builder row.',
+              'type' => 'int',
+              'not null' => FALSE,
+          ),
+          'type' => array(
+              'description' => 'The entity type.',
+              'type' => 'varchar',
+              'length' => '255',
+              'not null' => FALSE,
+          ),
+          'data' => array(
+              'description' => 'Data of each row',
+              'type' => 'blob',
+              'size' => 'big',
+              'not null' => FALSE,
+          ),
+          'status' => array(
+              'description' => 'Row status',
+              'type' => 'int',
+              'unsigned' => TRUE,
+              'not null' => TRUE,
+              'default' => 0,
+          ),
+          'created' => array(
+              'description' => 'Unix timestamp',
+              'type' => 'int',
+              'not null' => TRUE,
+          ),
+      ),
+      'primary key' => array('bid'),
+  );
+
+  $schema['builder_permission'] = array(
+      'description' => 'Allow admin settings permission for builder contents',
+      'fields' => array(
+          'rid' => array(
+              'description' => 'User role ID',
+              'type' => 'int',
+              'not null' => FALSE,
+          ),
+          'delta' => array(
+              'description' => 'Builder content delta',
+              'type' => 'varchar',
+              'length' => '255',
+              'not null' => TRUE,
+          ),
+          'module' => array(
+              'description' => 'Module name',
+              'type' => 'varchar',
+              'length' => '255',
+              'not null' => TRUE,
+          ),
+      ),
+  );
+
+
+  return $schema;
+}
+
+function builder_update_7101() {
+  $schema['builder_permission'] = array(
+      'description' => 'Allow admin settings permission for builder contents',
+      'fields' => array(
+          'rid' => array(
+              'description' => 'User role ID',
+              'type' => 'int',
+              'not null' => FALSE,
+          ),
+          'delta' => array(
+              'description' => 'Builder content delta',
+              'type' => 'varchar',
+              'length' => '255',
+              'not null' => TRUE,
+          ),
+          'module' => array(
+              'description' => 'Module name',
+              'type' => 'varchar',
+              'length' => '255',
+              'not null' => TRUE,
+          ),
+      ),
+  );
+  if (!db_table_exists('builder_permission')) {
+    db_create_table('builder_permission', $schema['builder_permission']);
+  }
+
+  $role = user_role_load_by_name('administrator');
+  $content_perms = array();
+  $contents = builder_content_load_contents();
+  if (!empty($contents)) {
+    foreach ($contents as $module => $module_content) {
+      if (!empty($module_content)) {
+        foreach ($module_content as $delta => $content) {
+          $content_perms[] = $delta;
+        }
+      }
+    }
+  }
+  builder_contents_grant_permissions($role->rid, $content_perms);
+  builder_contents_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('node', 'custom_text', 'image', 'vimeo', 'youtube'));
+}

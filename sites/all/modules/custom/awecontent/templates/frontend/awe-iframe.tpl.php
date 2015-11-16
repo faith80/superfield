@@ -1,0 +1,1 @@
+<iframe <?php if($id) print 'id="'.$id.'"'; ?> class="<?php print $classes?>" width="100%" <?php print $attributes?>></iframe>

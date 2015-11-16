@@ -1,0 +1,7 @@
+name = MD AWEContent Permission
+description = Manage permission for awecontent module.
+core = 7.x
+version = 7.x-1.0
+package = MegaDrupal
+
+dependencies[] = awecontent

@@ -1,0 +1,1956 @@
+<?php
+
+/**
+ * This module developed by toan@Tabvn.com, Do not use this without our permission.
+ */
+module_load_include('inc', 'builder', 'includes/builder');
+module_load_include('inc', 'builder', 'includes/fontawesome');
+module_load_include('inc', 'builder', 'includes/builder.content');
+
+function builder_admin_paths() {
+  $paths = array(
+    'builder/*' => TRUE,
+  );
+  return $paths;
+}
+
+/**
+ *
+ * Implements of hook_permission
+ */
+function builder_permission() {
+  return array(
+    'use builder' => array(
+      'title' => t('Use builder'),
+      'description' => t('Allow user can use drag drop builder.'),
+    ),
+    'administer builder' => array(
+      'title' => t('Administer builder'),
+      'description' => t('Administrator builder, content builder permissions'),
+    ),
+  );
+}
+
+/**
+ * Implemetns of hook_flush_caches()
+ */
+function builder_flush_caches() {
+
+  // clear all cache ID,
+  db_delete('builder_data')
+    ->condition('status', 0)
+    ->execute();
+
+  db_delete('ctools_object_cache')
+    ->condition('obj', 'builder')
+    ->execute();
+}
+
+/**
+ * Implements of hook_init()
+ */
+function builder_init() {
+
+  drupal_add_js(array('builder' => array('update_weight_url' => url('builder/weight'))), 'setting');
+
+  $builder_style = array(
+    'builder-modal-style' => array(
+      'modalOptions' => array(
+        'opacity' => .6,
+        'background-color' => '#684C31',
+      ),
+      'animation' => 'fadeIn',
+      'modalTheme' => 'builder_modal',
+      'throbber' => theme('image', array(
+        'path' => ctools_image_path('ajax-loader.gif', 'builder'),
+        'alt' => t('Loading...'),
+        'title' => t('Loading')
+      )),
+      // 'closeImage' => theme('image', array('path' => ctools_image_path('modal-close.png', 'ctools'), 'alt' => t('Close window'), 'title' => t('Close window'))),
+      'closeText' => t('Close'),
+    ),
+  );
+
+  drupal_add_js($builder_style, 'setting');
+  ctools_add_js('builder_modal', 'builder');
+  ctools_add_css('builder_modal', 'builder');
+}
+
+/**
+ * Implements of hook_menu()
+ */
+function builder_menu() {
+
+  $items = array();
+
+  $items['builder/%ctools_js/row/add/%'] = array(
+    'title' => 'Add row',
+    'page callback' => 'builder_row_add_page',
+    'page arguments' => array(1, 4),
+    'access arguments' => array('use builder'),
+    'type' => MENU_CALLBACK,
+    'file' => 'builder.ui.inc'
+  );
+  // row settings form
+  $items['builder/%ctools_js/row/edit/%/%'] = array(
+    'title' => 'Row settings',
+    'page callback' => 'builder_row_edit_page',
+    'page arguments' => array(1, 4, 5),
+    'access arguments' => array('use builder'),
+    'type' => MENU_CALLBACK,
+    'file' => 'builder.ui.inc'
+  );
+
+  // remove row 
+  $items['builder/%ctools_js/row/delete/%/%'] = array(
+    'title' => 'Delete row',
+    'page callback' => 'builder_row_delete_page',
+    'page arguments' => array(1, 4, 5),
+    'access arguments' => array('use builder'),
+    'type' => MENU_CALLBACK,
+    'file' => 'builder.ui.inc'
+  );
+  $items['builder/%ctools_js/row/clone/%/%'] = array(
+    'title' => 'Clone row',
+    'page callback' => 'builder_row_clone_page',
+    'page arguments' => array(1, 4, 5),
+    'access arguments' => array('use builder'),
+    'type' => MENU_CALLBACK,
+    'file' => 'builder.ui.inc'
+  );
+
+  // column settings form
+  $items['builder/%ctools_js/column/edit/%/%'] = array(
+    'title' => 'Column settings',
+    'page callback' => 'builder_column_edit_page',
+    'page arguments' => array(1, 4, 5),
+    'access arguments' => array('use builder'),
+    'type' => MENU_CALLBACK,
+    'file' => 'builder.ui.inc'
+  );
+  // remove row 
+  $items['builder/%ctools_js/column/delete/%/%/%'] = array(
+    'title' => 'Delete row',
+    'page callback' => 'builder_column_delete_page',
+    'page arguments' => array(1, 4, 5, 6),
+    'access arguments' => array('use builder'),
+    'type' => MENU_CALLBACK,
+    'file' => 'builder.ui.inc'
+  );
+
+  $items['builder/%ctools_js/column/clone/%/%/%'] = array(
+    'title' => 'Delete row',
+    'page callback' => 'builder_column_clone_page',
+    'page arguments' => array(1, 4, 5, 6),
+    'access arguments' => array('use builder'),
+    'type' => MENU_CALLBACK,
+    'file' => 'builder.ui.inc'
+  );
+
+  // prepare all contents available to add
+  $items['builder/%ctools_js/content/add/%/%/%'] = array(
+    'title' => 'Add content',
+    'page callback' => 'builder_content_list_all_page',
+    'page arguments' => array(1, 4, 5, 6),
+    'access arguments' => array('use builder'),
+    'type' => MENU_CALLBACK,
+    'file' => 'builder.ui.inc'
+  );
+  // add content , after select
+  $items['builder/%ctools_js/content/add/%/%/%/%/%'] = array(
+    'title' => 'Add content',
+    'page callback' => 'builder_content_add_page',
+    'page arguments' => array(1, 4, 5, 6, 7, 8),
+    'access arguments' => array('use builder'),
+    'type' => MENU_CALLBACK,
+    'file' => 'builder.ui.inc'
+  );
+  $items['builder/%ctools_js/content/edit/%/%/%/%'] = array(
+    'title' => 'Add content',
+    'page callback' => 'builder_content_edit_page',
+    'page arguments' => array(1, 4, 5, 6, 7),
+    'access arguments' => array('use builder'),
+    'type' => MENU_CALLBACK,
+    'file' => 'builder.ui.inc'
+  );
+
+  $items['builder/%ctools_js/content/delete/%/%/%/%'] = array(
+    'title' => 'Add content',
+    'page callback' => 'builder_content_delete_page',
+    'page arguments' => array(1, 4, 5, 6, 7),
+    'access arguments' => array('use builder'),
+    'type' => MENU_CALLBACK,
+    'file' => 'builder.ui.inc'
+  );
+
+  // builder set weight of column
+  $items['builder/weight/column/%/%'] = array(
+    'title' => 'Update column weight',
+    'page callback' => 'builder_column_update_weight',
+    'page arguments' => array(3, 4),
+    'access arguments' => array('use builder'),
+    'type' => MENU_CALLBACK,
+    'file' => 'builder.ui.inc',
+  );
+  // builder set weight of rows
+  $items['builder/weight/row/%'] = array(
+    'title' => 'Update column weight',
+    'page callback' => 'builder_row_update_weight',
+    'page arguments' => array(3),
+    'access arguments' => array('use builder'),
+    'type' => MENU_CALLBACK,
+    'file' => 'builder.ui.inc',
+  );
+
+  // builder set weight of content
+  $items['builder/weight/content/%/%/%'] = array(
+    'title' => 'Update content weight',
+    'page callback' => 'builder_content_update_weight',
+    'page arguments' => array(3, 4, 5),
+    'access arguments' => array('use builder'),
+    'type' => MENU_CALLBACK,
+    'file' => 'builder.ui.inc',
+  );
+
+  // autocomplete for node
+  $items['builder/autocomplete/node'] = array(
+    'title' => 'Node autocomplete',
+    'page callback' => 'builder_autocomplete_node_page',
+    'access arguments' => array('use builder'),
+    'type' => MENU_CALLBACK,
+    'file' => 'builder.ui.inc',
+  );
+
+  $items['builder/tools/%/export'] = array(
+    'title' => 'Export builder',
+    'page callback' => 'builder_tools_export_page',
+    'page arguments' => array(2),
+    'access arguments' => array('use builder'),
+    'type' => MENU_CALLBACK,
+    'file' => 'builder.tools.inc'
+  );
+
+  $items['builder/tools/%ctools_js/%/import'] = array(
+    'title' => 'Import builder',
+    'page callback' => 'builder_tools_import_page',
+    'page arguments' => array(2, 3),
+    'access arguments' => array('use builder'),
+    'type' => MENU_CALLBACK,
+    'file' => 'builder.tools.inc'
+  );
+
+  $items['admin/config/builder/permissions'] = array(
+    'title' => 'Builder contents permissions',
+    'description' => 'Determine access to select content by selecting permissions for roles.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('builder_admin_content_permissions'),
+    'access arguments' => array('administer builder'),
+    'file' => 'builder.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_field_info().
+ *
+ */
+function builder_field_info() {
+  return array(
+    // We name our field as the associative name of the array.
+    'builder' => array(
+      'label' => t('Builder'),
+      'description' => t('Add content via Builder.'),
+      'default_widget' => 'builder_widget',
+      'default_formatter' => 'builder_formatter',
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_is_empty().
+ *
+ * hook_field_is_emtpy() is where Drupal asks us if this field is empty.
+ * Return TRUE if it does not contain data, FALSE if it does. This lets
+ * the form API flag an error when required fields are empty.
+ */
+function builder_field_is_empty($item, $field) {
+  return empty($item['bid']);
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function builder_field_formatter_info() {
+  return array(
+    'builder_formatter' => array(
+      'label' => t('Builder'),
+      'field types' => array('builder'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function builder_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  switch ($display['type']) {
+    // This formatter simply outputs the field as text and with a color.
+    case 'builder_formatter':
+      foreach ($items as $delta => $item) {
+        $element[$delta] = array(
+          '#type' => 'html_tag',
+          '#tag' => 'div',
+          '#attributes' => array(
+            'class' => array('builder-section', 'builder-section-' . $delta),
+          ),
+          '#value' => theme('builder', array('bid' => $item['bid'])),
+        );
+      }
+      break;
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_widget_info().
+ *
+ */
+function builder_field_widget_info() {
+  return array(
+    'builder_widget' => array(
+      'label' => t('Builder'),
+      'field types' => array('builder'),
+      'behaviors' => array(
+        'multiple values' => FIELD_BEHAVIOR_DEFAULT,
+        'default value' => FIELD_BEHAVIOR_NONE,
+      ),
+    ),
+  );
+}
+
+function builder_field_insert($entity_type, $entity, $field, $instance, $langcode, $items) {
+
+  if ($field['type'] == 'builder') {
+    if (!empty($items)) {
+      foreach ($items as $delta => $item) {
+        $bid = $item['bid'];
+        $builder_cache_id = builder_get_cache_id($bid, $delta);
+        $builder = builder_cache_get($builder_cache_id);
+        list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
+
+        $data = array(
+          'entity_id' => $id,
+          'data' => isset($builder) ? serialize($builder) : '',
+          'type' => $entity_type,
+          'status' => 1,
+          'created' => isset($entity->created) ? $entity->created : REQUEST_TIME,
+        );
+        builder_field_save_attach_data($bid, $data);
+        builder_cache_clear($builder_cache_id);
+        builder_files_update($bid, $builder);
+      }
+    }
+  }
+}
+
+/**
+ * Implements of hook_field_update()
+ */
+function builder_field_update($entity_type, $entity, $field, $instance, $langcode, &$items) {
+
+
+  if ($field['type'] == 'builder') {
+
+    if (function_exists('i18n_sync')) {
+      i18n_sync(FALSE);
+    }
+
+    if (!empty($items)) {
+      foreach ($items as $delta => $item) {
+        $bid = $item['bid'];
+        $builder_cache_id = builder_get_cache_id($bid, $delta);
+        $builder = builder_cache_get($builder_cache_id);
+        list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
+        $data = array(
+          'entity_id' => $id,
+          'data' => isset($builder) ? serialize($builder) : '',
+          'type' => $entity_type,
+          'status' => 1,
+          'created' => isset($entity->created) ? $entity->created : REQUEST_TIME,
+        );
+        builder_field_save_attach_data($bid, $data);
+        builder_cache_clear($builder_cache_id);
+
+        builder_files_update($bid, $builder);
+      }
+    }
+  }
+}
+
+/**
+ * Alter files status after saving builder.
+ */
+function builder_files_update($bid, $builder) {
+
+  $fids = array();
+
+
+  if (!empty($builder->rows)) {
+    foreach ($builder->rows as $row_key => $row) {
+      // check for row background and set file status = 1
+      if (!empty($row['settings']['background']['background_image'])) {
+        $fid = $row['settings']['background']['background_image'];
+        $fids[] = $fid;
+      }
+
+
+      // videos
+
+      if (!empty($row['settings']['video_bg']['videos'])) {
+        foreach ($row['settings']['video_bg']['videos'] as $key => $video_file_fid) {
+          if (!empty($video_file_fid)) {
+            $fids[] = $video_file_fid;
+          }
+        }
+      }
+
+
+      if (!empty($row['columns'])) {
+        foreach ($row['columns'] as $column_key => $column) {
+
+          if (!empty($column['contents'])) {
+            foreach ($column['contents'] as $content_key => $content) {
+              $delta = $content['delta'];
+              // hook_builder_content_saved_alter($delta, &$content, $bid) or hook_builder_content_saved_MODULE_DELTA_alter($delta &$content, $bid).
+              drupal_alter(array(
+                'builder_content_saved',
+                "builder_content_saved_{$content['module']}_{$delta}"
+              ), $delta, $content, $bid);
+            }
+          }
+        }
+      }
+    }
+  }
+
+
+  if (!empty($fids)) {
+    foreach ($fids as $file_id) {
+      $file = file_load($file_id);
+      if ($file && !$file->status) {
+        $file->status = FILE_STATUS_PERMANENT;
+        file_save($file);
+        file_usage_add($file, 'builder', 'builder', $bid);
+      }
+    }
+  }
+}
+
+/**
+ *
+ * @param type $bid
+ * @param type $data
+ * Save builder information into table {builder_data}
+ */
+function builder_field_save_attach_data($bid, $data) {
+
+  db_update('builder_data')// Table name no longer needs {}
+  ->fields($data)
+    ->condition('bid', $bid)
+    ->execute();
+}
+
+function builder_field_delete_builder($bid) {
+
+  $deleted = db_delete('builder_data')
+    ->condition('bid', $bid)
+    ->execute();
+
+  return $deleted;
+}
+
+/**
+ * Implements of hook_field_delete()
+ */
+function builder_field_delete($entity_type, $entity, $field, $instance, $langcode, &$items) {
+  list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
+  foreach ($items as $delta => $item) {
+    $bid = $item['bid'];
+    builder_field_delete_builder($bid);
+    $builder_cache_id = 'builder_cache_' . $bid . '_' . $delta;
+    builder_cache_clear($builder_cache_id);
+    if (!empty($bid)) {
+      $fids = db_select('file_usage', 'f')
+        ->fields('f', array('fid'))
+        ->condition('f.type', 'builder')
+        ->condition('f.id', $bid)
+        ->execute()
+        ->fetchCol();
+
+      if (!empty($fids)) {
+        foreach ($fids as $fid) {
+          if ($file = file_load($fid)) {
+            // delete all files belong to this Builder.
+            file_delete($file, TRUE);
+          }
+        }
+      }
+    }
+  }
+}
+
+function builder_create_bid() {
+  global $user;
+  $bid = db_insert('builder_data')->fields(array(
+    'uid' => $user->uid,
+    'created' => REQUEST_TIME,
+    'status' => 0,
+  ))
+    ->execute();
+
+
+  return $bid;
+}
+
+/**
+ * Implements hook_field_widget_form().
+ *
+ */
+function builder_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  global $user;
+
+  if (!user_access('use builder', $user)) {
+    return;
+  }
+
+
+  $entity_type = $element['#entity_type'];
+  $entity = $element['#entity'];
+  $field_name = $field['field_name'];
+
+  list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
+
+  $bid = isset($items[$delta]['bid']) ? $items[$delta]['bid'] : '';
+
+  if (!builder_check_exist($bid)) {
+    $bid = builder_create_bid();
+  }
+
+  if (!$bid) {
+    // for adding new entity
+    if (isset($form_state['input'][$field_name][$langcode][$delta]['bid'])) {
+      $bid = $form_state['input'][$field_name][$langcode][$delta]['bid'];
+    }
+    else {
+
+      $bid = builder_create_bid();
+    }
+
+    $form_state['bid'] = $bid;
+  }
+  $builder_cache_id = builder_get_cache_id($bid, $delta);
+
+  $widget = $element;
+  $widget['#delta'] = $delta;
+
+  switch ($instance['widget']['type']) {
+
+    case 'builder_widget':
+
+      $builder_module_path = drupal_get_path('module', 'builder');
+      $js = array(
+        $builder_module_path . '/js/colorpicker/js/colorpicker.js',
+        $builder_module_path . '/js/builder_ui.js',
+      );
+      $css = array(
+        $builder_module_path . '/lib/animation/animate.css',
+        $builder_module_path . '/lib/font_awesome/css/font_awesome.css',
+        $builder_module_path . '/js/colorpicker/css/colorpicker.css',
+        $builder_module_path . '/css/builder_ui_grid.css',
+        $builder_module_path . '/css/global.css',
+        $builder_module_path . '/css/builder_ui.css',
+      );
+
+      $widget += array(
+        '#attributes' => array('class' => array('edit-builder-widget')),
+        '#attached' => array(
+          'library' => array(
+            array('system', 'ui'),
+            array('system', 'farbtastic'),
+            array('system', 'ui.sortable'),
+            array('system', 'ui.draggable'),
+            array('system', 'ui.droppable'),
+          ),
+          'js' => $js,
+          'css' => $css,
+        ),
+        '#type' => 'hidden',
+        '#default_value' => $bid,
+      );
+  }
+
+
+  $element['bid'] = $widget;
+
+  if ($bid) {
+    // Edit entity.
+    $builder_data = builder_get_data($bid);
+    if (empty($builder_data)) {
+      $builder_data = new stdClass;
+    }
+    $builder_get = builder_cache_get($builder_cache_id);
+    if (empty($form_state['input']) && isset($builder_data)) {
+
+      $builder_data->is_new = FALSE;
+      builder_cache_set($builder_cache_id, $builder_data);
+    }
+    else {
+      if (isset($builder_get->is_new) && $builder_get->is_new) {
+        $builder_data->is_new = FALSE;
+        builder_cache_set($builder_cache_id, $builder_data);
+      }
+    }
+  }
+
+
+  $builder = builder_cache_get($builder_cache_id);
+  $builder_id_ajax_prefix = 'builder-ui-ajax-wrapper' . $builder_cache_id;
+  $element['builder'] = array(
+    '#theme' => 'builder_ui',
+    '#builder' => $builder,
+    '#prefix' => '<div id="' . $builder_id_ajax_prefix . '">',
+    '#suffix' => '</div>',
+    '#bid' => $bid,
+    '#element_validate' => array('builder_display_field_validate'),
+    //'#process' => array('builder_display_field_process'),
+    '#delta' => $delta,
+  );
+
+
+  return $element;
+}
+
+/**
+ *
+ * Validate builder display element UI
+ */
+function builder_display_field_validate($element, &$form_state) {
+
+  ctools_include('ajax');
+  ctools_include('modal');
+  ctools_modal_add_js();
+  if (isset($element['#builder'])) {
+    $original_builder = $element['#builder'];
+    $builder = builder_cache_get($original_builder->cache_id);
+    $element['#builder'] = $builder;
+  }
+
+  return $element;
+}
+
+/**
+ *
+ * Process elemetn builder display UI.
+ */
+function builder_display_field_process($element, &$form_state, $form) {
+  if (empty($form_state['builder_cache_id'])) {
+    $bid = builder_create_bid();
+    $delta = $element['#delta'];
+    $builder_cache_id = 'builder_cache_' . $bid . '_' . $delta;
+    $form_state['builder_cache_id'] = $builder_cache_id;
+  }
+
+  ctools_include('ajax');
+  ctools_include('modal');
+  ctools_modal_add_js();
+  if (isset($element['#builder'])) {
+    $original_builder = $element['#builder'];
+    $builder = builder_cache_get($original_builder->cache_id);
+    $element['#builder'] = $builder;
+  }
+  return $element;
+}
+
+/**
+ * Implements of hook_theme_registry_alter()
+ */
+function builder_theme_registry_alter(&$theme_registry) {
+
+  if (isset($theme_registry['file_managed_file'])) {
+    $theme_registry['file_managed_file']['function'] = 'theme_builder_file_managed_file';
+  }
+}
+
+/**
+ * Themeable and overrdide file_managed_file()
+ */
+function theme_builder_file_managed_file($variables) {
+  $element = $variables['element'];
+  $attributes = array();
+  if (isset($element['#id'])) {
+    $attributes['id'] = $element['#id'];
+  }
+  if (!empty($element['#attributes']['class'])) {
+    $attributes['class'] = (array) $element['#attributes']['class'];
+  }
+  $attributes['class'][] = 'form-managed-file';
+
+  // This wrapper is required to apply JS behaviors and CSS styling.
+  $output = '';
+  $wrapper_attributes = $attributes;
+  if (isset($wrapper_attributes['id'])) {
+    $wrapper_attributes['id'] = $wrapper_attributes['id'] . '-file-upload-wrapper';
+  }
+  $output .= '<div' . drupal_attributes($wrapper_attributes) . '>';
+  $output .= drupal_render_children($element);
+  $output .= '</div>';
+  return $output;
+}
+
+/**
+ * Implements of hook_theme()
+ */
+function builder_theme($existing, $type, $theme, $path) {
+  return array(
+    'builder' => array(
+      'variables' => array('bid' => NULL),
+      'template' => 'builder',
+      'path' => drupal_get_path('module', 'builder') . '/templates',
+    ),
+    'builder_field_multiple_value_form' => array(
+      'render element' => 'element',
+    ),
+    'builder_ui' => array(
+      'variables' => array('builder' => NULL),
+      'template' => 'builder-ui',
+      'path' => drupal_get_path('module', 'builder') . '/templates',
+    ),
+    'builder_ui_row' => array(
+      'variables' => array('builder' => NULL, 'row_id' => NULL),
+      'template' => 'builder-ui-row',
+      'path' => drupal_get_path('module', 'builder') . '/templates',
+    ),
+    'builder_ui_dropdown' => array(
+      'variables' => array(),
+      'render element' => 'element',
+    ),
+    'builder_ui_content_list' => array(
+      'variables' => array('js' => FALSE),
+      'render element' => 'element',
+    ),
+    'builder_content' => array(
+      'render element' => 'elements',
+      'template' => 'builder-content',
+      'path' => drupal_get_path('module', 'builder') . '/templates',
+    ),
+    'builder_file_managed_file' => array(
+      'render element' => 'element',
+    ),
+    'builder_admin_content_permissions' => array(
+      'render element' => 'form',
+      'file' => 'builder.admin.inc',
+    ),
+    'builder_ui_fontawesome' => array(
+      'variables' => array('selected' => ''),
+      'render element' => 'element',
+    ),
+    'builder_content_icon' => array(
+      'variables' => array('content' => array()),
+      'render element' => 'element',
+    ),
+    'builder_content_custom_heading' => array(
+      'variables' => array('content' => array()),
+      'render element' => 'element',
+    ),
+  );
+}
+
+/**
+ * Themeable for select list icon when adding new content to builder.
+ */
+function theme_builder_ui_fontawesome($variables) {
+  $selected = !empty($variables['selected']) ? $variables['selected'] : 'fa fa-adjust';
+  $output = '<div class="builder-ui-content-icons-markup">';
+  $fonts = builder_font_awesome();
+  $output .= '<div class="builder-ui-content-icons-search"><div class="form-item form-type-textfield"><input size="60" class="form-text builder-ui-icon-search" name="builder-ui-icon-search" type="text" placeholder="' . t('Search Icon') . '" /></div></div>';
+  $output .= '<div class="builder-ui-content-icons-containner">';
+  foreach ($fonts as $class => $title) {
+    $class = 'fa ' . $class;
+    $extra_class = '';
+    if ($selected == $class) {
+      $extra_class = ' current-icon';
+    }
+    $output .= '<span data-value="' . $class . '" class="builder-ui-icon-wrap' . $extra_class . '" title="' . $title . '"><span class="builder-hidden-content">' . $title . '</span><i data-value="' . $class . '" class="fa ' . $class . '"></i></span>';
+  }
+  $output .= '</div>'; // builder-ui-content-icons-containner
+  $output .= '</div>'; //builder-ui-content-icons-markup
+  return $output;
+}
+
+/**
+ * Themeable for content element icon
+ */
+function theme_builder_content_icon($variables) {
+  $output = '';
+  $content = $variables['content'];
+  $content_key = isset($content['content_key']) ? $content['content_key'] : uniqid();
+  $id = drupal_html_id('builder-content-icon-' . $content_key);
+  $css_data = '';
+  if (!empty($content['settings']['background_color'])) {
+    $css_data .= "#$id .builder-content-icon-inner{";
+    $background_color = $content['settings']['background_color'];
+    $css_data .= "background-color: $background_color;";
+    $css_data .= "} ";
+  }
+
+  if (!empty($content['settings']['color'])) {
+    $css_data .= "#$id span.builder-element-icon, #$id span.builder-element-icon a{ ";
+    $color = $content['settings']['color'];
+    $css_data .= "color: $color;";
+    $css_data .= "} ";
+  }
+
+
+  drupal_add_css($css_data, array('type' => 'inline'));
+
+  $icon_class = !empty($content['settings']['icon']) ? $content['settings']['icon'] : '';
+  $icon = '<span class="builder-element-icon ' . $icon_class . '"></span>';
+  if (!empty($content['settings']['link'])) {
+    $url = '#';
+    if ($content['settings']['link'] !== '#') {
+      $url = url($content['settings']['link']);
+      $icon .= '<a class="builder-element-icon-link" href="' . $url . '"></a>';
+    }
+  }
+  $size = !empty($content['settings']['size']) ? ' builder-content-icon-size-' . $content['settings']['size'] : '';
+  $extra_class = !empty($content['settings']['extra_class_name']) ? ' ' . $content['settings']['extra_class_name'] : '';
+  $shape = !empty($content['settings']['shape']) ? ' builder-content-icon-style-' . $content['settings']['shape'] : '';
+  $output .= '<div id="' . $id . '" class="builder-content-icon-wrapper' . $extra_class . '">';
+  $output .= '<div class="builder-content-icon-inner' . $size . $shape . '">' . $icon . '</div>';
+  $output .= '</div>';  //builder-content-icon-wrapper
+  return $output;
+}
+
+/**
+ * Themeable for custom heading content
+ */
+function theme_builder_content_custom_heading($variables) {
+  $content = $variables['content'];
+  $custom_heading_value = isset($content['settings']['text']) ? filter_xss_admin($content['settings']['text']) : '';
+  if (!empty($content['settings']['link'])) {
+    $url = '#';
+    if ($content['settings']['link'] !== '#') {
+      $url = url($content['settings']['link']);
+    }
+    $custom_heading_value = '<a href="' . $url . '">' . $custom_heading_value . '</a>';
+  }
+
+  $custom_heading_class = array('builder-content-custom-heading');
+  if (!empty($content['settings']['custom_css_class'])) {
+    $custom_heading_class[] = $content['settings']['custom_css_class'];
+  }
+  $uniqid = uniqid();
+  $heading_id = isset($content['content_key']) ? drupal_html_id('builder-content-heading-' . $content['content_key']) : drupal_html_id('builder-content-heading-' . $uniqid);
+  $data_css = "#$heading_id, #$heading_id a{ ";
+  if (!empty($content['settings']['text_align'])) {
+    $text_align = $content['settings']['text_align'];
+    $data_css .= "text-align: $text_align; ";
+  }
+  if (!empty($content['settings']['font_size'])) {
+    $font_suffix = 'px';
+    $font_size = $content['settings']['font_size'];
+    if ((strpos($content['settings']['font_size'], 'px') == FALSE)) {
+      $font_size = $content['settings']['font_size'] . $font_suffix;
+    }
+
+    $data_css .= "font-size: $font_size !important;";
+  }
+  if (!empty($content['settings']['text_color'])) {
+    $color = $content['settings']['text_color'];
+    $data_css .= "color: $color; ";
+  }
+  $data_css .= " } ";
+  drupal_add_css($data_css, array('type' => 'inline'));
+  $custom_heading_element = array(
+    'element' => array(
+      '#tag' => !empty($content['settings']['tag']) ? $content['settings']['tag'] : 'h5',
+      '#attributes' => array(
+        'id' => $heading_id,
+        'class' => $custom_heading_class
+      ),
+      '#value' => $custom_heading_value,
+    )
+  );
+  return theme('html_tag', $custom_heading_element);
+}
+
+function template_preprocess_builder(&$variables) {
+  drupal_add_css(drupal_get_path('module', 'builder') . '/lib/animation/animate.css');
+  drupal_add_css(drupal_get_path('module', 'builder') . '/lib/font_awesome/css/font_awesome.css');
+  drupal_add_css(drupal_get_path('module', 'builder') . '/css/builder_grid.css');
+  drupal_add_css(drupal_get_path('module', 'builder') . '/css/global.css');
+  drupal_add_css(drupal_get_path('module', 'builder') . '/css/builder.css');
+
+  drupal_add_js(drupal_get_path('module', 'builder') . '/lib/animation/animation.js');
+  drupal_add_js(drupal_get_path('module', 'builder') . '/js/builder.js');
+  $use_parallax = FALSE;
+  $use_video_background = FALSE;
+  $bid = $variables['bid'];
+  $builder = builder_get_data($bid);
+  $builder->bid = $bid;
+  $variables['builder'] = $builder;
+  $rows = array();
+  $video_js_inline = '';
+  if (!empty($builder->rows)) {
+
+    foreach ($builder->rows as $row_key => $row) {
+      $row_id = builder_extract_id_key($row_key);
+      $row['row_key'] = $row_key;
+      $row['bid'] = $builder->bid;
+      $rows[] = $row;
+    }
+    uasort($rows, 'drupal_sort_weight');
+  }
+
+  if (!empty($rows)) {
+    $i = 1;
+    foreach ($rows as $row) {
+
+
+      if (isset($row['settings']['background']['use_parallax']) && $row['settings']['background']['use_parallax']) {
+        $use_parallax = TRUE;
+      }
+
+      if (isset($row['settings']['video_bg']['videos']) && !empty($row['settings']['video_bg']['videos'])) {
+
+        $videos_arr = array();
+        $poster_type = 'none';
+        $poster_type_mines = array(
+          'image/jpeg' => 'jpg',
+          'image/jpg' => 'jpg',
+          'gif' => 'image/gif',
+          'image/png' => 'png'
+        );
+        foreach ($row['settings']['video_bg']['videos'] as $type => $fid) {
+          if (!empty($fid) && $file = file_load($fid)) {
+            if ($type == 'poster') {
+              if (!empty($poster_type_mines[$file->filemime])) {
+                $poster_type = $poster_type_mines[$file->filemime];
+              }
+            }
+            $videos_arr[$type] = file_create_url($file->uri);
+          }
+        }
+        if (!empty($videos_arr)) {
+          $element_selector = '.builder-wrapper.buider-wrapper-' . $bid . ' .builder-row.builder-row-item-' . $i;
+          $use_video_background = TRUE;
+
+          $videos = json_encode($videos_arr);
+          $video_options = '{}';
+
+          if (!empty($row['settings']['video_bg']['options'])) {
+            $default_options = $row['settings']['video_bg']['options'];
+            $default_options['posterType'] = $poster_type;
+            $video_options = json_encode($default_options);
+          }
+          $video_js_inline .= "$('$element_selector').vide($videos, $video_options);";
+        }
+      }
+      $row_key = $row['row_key'];
+      $row_id = builder_extract_id_key($row_key);
+      $row['row_key'] = $row_key;
+      $row['row_id'] = $row_id;
+      $row['bid'] = $bid;
+      builder_set_row_css_inline($row, $i);
+
+      $columns = array();
+      if (!empty($builder->rows[builder_get_row_key($row_id)]['columns'])) {
+        foreach ($builder->rows[builder_get_row_key($row_id)]['columns'] as $column_key => $column) {
+          $column['column_key'] = $column_key;
+          $column['bid'] = $builder->bid;
+          $columns[] = $column;
+        }
+        uasort($columns, 'drupal_sort_weight');
+      }
+
+      if (!empty($columns)) {
+        $i_column = 1;
+        foreach ($columns as $column) {
+          builder_set_column_css_inline($column, $i, $i_column);
+          $i_column++;
+        }
+      }
+      $i++;
+    }
+  }
+
+  $parallax_js_inline = "";
+  if ($use_parallax) {
+    $parallax_js_inline = '$.stellar({horizontalScrolling: false});';
+    drupal_add_js(drupal_get_path('module', 'builder') . '/js/parallax/parallax_background.js');
+  }
+  if ($use_video_background) {
+    drupal_add_js(drupal_get_path('module', 'builder') . '/js/parallax/video_background.js');
+  }
+  if (!empty($parallax_js_inline) || !empty($video_js_inline)) {
+    $data_js = $parallax_js_inline;
+    if (!empty($video_js_inline)) {
+      $data_js .= "\n ";
+      $data_js .= $video_js_inline;
+    }
+    drupal_add_js('(function ($) {   $(document).ready(function () { ' . $data_js . ' });   })(jQuery);', array('type' => 'inline'));
+  }
+  $variables['rows'] = $rows;
+}
+
+function template_preprocess_builder_ui(&$variables) {
+  ctools_include('ajax');
+  ctools_include('modal');
+  ctools_modal_add_js();
+
+  $elements = array();
+  $original_builder = $variables['builder'];
+  $builder_cache_id = $original_builder->cache_id;
+  $builder_id = $builder_cache_id;
+  $builder = builder_cache_get($builder_cache_id);
+
+
+  $rows = array();
+  if (!empty($builder->rows)) {
+    foreach ($builder->rows as $row_key => $row) {
+      $row['row_key'] = $row_key;
+      $rows[] = $row;
+    }
+    uasort($rows, 'drupal_sort_weight');
+  }
+  if (!empty($rows)) {
+    foreach ($rows as $row) {
+      $row_key = $row['row_key'];
+      $row_id = builder_extract_id_key($row_key);
+      $delta = $row_id;
+      $id_row_prefix = 'builder_' . $builder_cache_id . '_row_' . $delta;
+      $elements[$row_key] = array(
+        '#theme' => 'builder_ui_row',
+        '#builder' => $builder,
+        '#delta' => $row_id,
+        '#row_id' => $delta,
+        '#prefix' => '<div id="' . $id_row_prefix . '">',
+        '#suffix' => '</div>',
+      );
+    }
+  }
+  $tools_settings = array(
+    'export' => l(t('Export'), 'builder/tools/' . $builder_id . '/export', array('attributes' => array('class' => array('icon-buikder-export')))),
+    'import' => ctools_ajax_text_button(t('Import'), 'builder/tools/nojs/' . $builder_id . '/import', t('Import builder'), 'ctools-modal-builder-modal-style icon-builder-up-circled'),
+  );
+  $tools_group_links = $row_action_group = theme('builder_ui_dropdown', array(
+    'image' => TRUE,
+    'title' => 'Tools',
+    'class' => 'builder-ui-settings',
+    'links' => $tools_settings
+  ));
+  $builder_actions = array(
+    'add_row' => ctools_ajax_text_button(t('Add row'), 'builder/nojs/row/add/' . $builder_id, t('Add row'), 'ctools-modal-builder-modal-style icon-builder-doc-add'),
+    'tools' => $tools_group_links,
+  );
+  $variables['rows'] = $elements;
+  $variables['builder_actions'] = $builder_actions;
+  $variables['builder'] = $builder;
+  $variables['builder_cache_id'] = $builder_cache_id;
+
+  $variables['css_class'] = 'builder-ui-wrapper builder-ui-wrapper-' . str_replace('_', '-', $builder_cache_id);
+  $variables['css_id'] = 'builder-ui-' . $builder_cache_id;
+}
+
+function template_preprocess_builder_ui_row(&$variables) {
+  //load ctools ajax, and modal libraries.
+  ctools_include('ajax');
+  ctools_include('modal');
+  ctools_modal_add_js();
+  $row_id = builder_extract_id_key($variables['row_id']);
+  $builder = $variables['builder'];
+  $builder_id = $builder->cache_id;
+  $row_action_group_links = array(
+    'edit_row' => ctools_modal_text_button(t('Edit row'), 'builder/nojs/row/edit/' . $builder_id . '/' . $row_id, t('Row settings'), 'ctools-use-modal ctools-modal-builder-modal-style icon-builder-edit'),
+    'clone_row' => ctools_ajax_text_button(t('Clone row'), 'builder/nojs/row/clone/' . $builder_id . '/' . $row_id, t('Clone row'), 'ctools-modal-builder-modal-style icon-builder-clone'),
+    'delete_row' => ctools_ajax_text_button(t('Delete row'), 'builder/nojs/row/delete/' . $builder_id . '/' . $row_id, t('Are you sure delete row ?'), 'ctools-modal-builder-modal-style icon-builder-cancel-circled-outline builder-action-delete'),
+  );
+  $row_action_group = theme('builder_ui_dropdown', array(
+    'image' => TRUE,
+    'title' => 'Settings',
+    'class' => 'builder-ui-row-action-group-links',
+    'links' => $row_action_group_links
+  ));
+  $row_actions = array(
+    'group' => $row_action_group,
+    'add_column' => ctools_modal_text_button(t('Add column'), 'builder/nojs/column/edit/' . $builder_id . '/' . $row_id, t('Add column'), 'ctools-modal-builder-modal-style icon-builder-doc-add'),
+  );
+
+  $variables['row_actions'] = $row_actions;
+  $column_actions_render = array();
+  $content_actions = array();
+  if (!empty($builder->rows[builder_get_row_key($row_id)]['columns'])) {
+
+    foreach ($builder->rows[builder_get_row_key($row_id)]['columns'] as $column_key => $column) {
+      $column_id = builder_extract_id_key($column_key);
+      $link_items = array();
+      $link_items[] = ctools_modal_text_button(t('Add content'), 'builder/nojs/content/add/' . $builder_id . '/' . $row_id . '/' . $column_id, t('Add content'), 'ctools-modal-builder-modal-style icon-builder-doc-add');
+      $link_items[] = ctools_modal_text_button(t('Edit column'), 'builder/nojs/column/edit/' . $builder_id . '/' . $row_id . '/' . $column_id, t('Edit column'), 'ctools-modal-builder-modal-style icon-builder-edit');
+      $link_items[] = ctools_ajax_text_button(t('Clone column'), 'builder/nojs/column/clone/' . $builder_id . '/' . $row_id . '/' . $column_id, t('Clone column'), 'ctools-modal-builder-modal-style icon-builder-clone');
+      $link_items[] = ctools_ajax_text_button(t('Delete column'), 'builder/nojs/column/delete/' . $builder_id . '/' . $row_id . '/' . $column_id, t('Are you sure delete this column ?'), 'ctools-modal-builder-modal-style icon-builder-cancel-circled-outline builder-action-delete');
+
+      $columns_link_output = theme('builder_ui_dropdown', array(
+        'image' => TRUE,
+        'title' => '',
+        'class' => 'builder-ui-column-action-links',
+        'links' => $link_items
+      ));
+      $columns_link_output .= '<div class="builder-ui-move"><span class="builder-ui-draggable icon-builder-move"></span></div>';
+      $column_actions_render[$row_id][$column_id] = $columns_link_output;
+
+      if (!empty($column['contents'])) {
+        foreach ($column['contents'] as $content_key => $content) {
+          $content_links = array();
+          $content_id = builder_extract_id_key($content_key);
+          $content_links[] = ctools_modal_text_button(t('Edit'), 'builder/nojs/content/edit/' . $builder_id . '/' . $row_id . '/' . $column_id . '/' . $content_id, t('Edit'), 'ctools-modal-builder-modal-style icon-builder-edit');
+          $content_links[] = ctools_ajax_text_button(t('Delete'), 'builder/nojs/content/delete/' . $builder_id . '/' . $row_id . '/' . $column_id . '/' . $content_id, t('Remove !title ?', array('!title' => $content['info'])), 'ctools-modal-builder-modal-style icon-builder-cancel-circled-outline builder-action-delete');
+
+          $content_link_output = theme('builder_ui_dropdown', array(
+            'image' => TRUE,
+            'title' => '',
+            'class' => 'builder-ui-content-action-links',
+            'links' => $content_links
+          ));
+          $content_link_output .= '<div class="builder-ui-move"><span class="builder-ui-draggable icon-builder-move"></span></div>';
+          $content_actions[$row_id][$column_id][$content_id] = $content_link_output;
+        }
+      }
+    }
+  }
+
+  $variables['column_actions'] = $column_actions_render;
+  $variables['content_actions'] = $content_actions;
+}
+
+/**
+ * Processes variables for builder-content.tpl.php.
+ *
+ * @see builder-content.tpl.php
+ */
+function template_preprocess_builder_content(&$variables) {
+  $content = $variables['elements']['#content'];
+
+  $variables['content'] = $content;
+  // Create the $content variable that templates expect.
+  $render_content = isset($variables['elements']['#children']) ? $variables['elements']['#children'] : '';
+  $variables['main_content'] = $render_content;
+
+  $variables['classes_array'][] = drupal_html_class('builder-content-' . $content['module']);
+  $variables['classes_array'][] = drupal_html_class('builder-content-' . $content['module'] . '-' . $content['delta']);
+  $variables['theme_hook_suggestions'][] = 'builder_content__' . $content['module'];
+  if (!empty($content['type'])) {
+    $variables['theme_hook_suggestions'][] = 'builder_content__' . $content['module'] . '__' . $content['type'];
+  }
+  // Hyphens (-) and underscores (_) play a special role in theme suggestions.
+  // Theme suggestions should only contain underscores, because within
+  // drupal_find_theme_templates(), underscores are converted to hyphens to
+  // match template file names, and then converted back to underscores to match
+  // pre-processing and other function names. So if your theme suggestion
+  // contains a hyphen, it will end up as an underscore after this conversion,
+  // and your function names won't be recognized. So, we need to convert
+  // hyphens to underscores in block deltas for the theme suggestions.
+  $variables['theme_hook_suggestions'][] = 'builder_content__' . $content['module'] . '__' . strtr($content['delta'], '-', '_');
+
+  // Create a valid HTML ID and make sure it is unique.
+  $variables['block_html_id'] = drupal_html_id('builder-' . $content['module'] . '-' . $content['delta']);
+
+  $variables['title_attributes'] = drupal_attributes(array('class' => array('builder-content-title')));
+  $variables['content_attributes'] = drupal_attributes(array());
+}
+
+/**
+ * Themeable for builder_ui_content_list
+ */
+function theme_builder_ui_content_list($variables) {
+  ctools_include('ajax');
+  ctools_include('modal');
+
+  // Add CTools' javascript to the page.
+  ctools_modal_add_js();
+
+  $contents = $variables['contents'];
+  $builder = $variables['builder'];
+  $builder_id = $builder->cache_id;
+  $row_id = $variables['row_id'];
+  $column_id = $variables['column_id'];
+
+
+  $output = '<div class="builder-ui-contents">';
+  $wrap_title = t('No content available!');
+  $links = array();
+  $group = array();
+  if (!empty($contents)) {
+    $wrap_title = t('Select content to add');
+    foreach ($contents as $module => $module_contents) {
+      if (!empty($module_contents)) {
+        foreach ($module_contents as $delta => $content) {
+          if (!empty($content['group'])) {
+            $group[$content['group']][$delta] = $content;
+          }
+          else {
+            $group[t('Other')][$delta] = $content;
+          }
+          // $links[] = ctools_ajax_text_button(check_markup($content['info']), 'builder/nojs/content/add/' . $builder_id . '/' . $row_id . '/' . $column_id . '/' . $module . '/' . $delta, t('!module: !delta: !title', array('!module' => $module, '!delta' => $delta, '!title' => $content['info'])));
+        }
+      }
+    }
+  }
+
+  $search_filter_input = '<div class="builder-content-filter form-item form-type-textfield"><input placeholder="'.t('Search...').'" name="builder-filter-element" class="builder-filter-element form-text" /></div>';
+  $element['tab'] = array(
+    '#type' => 'vertical_tabs',
+    '#tree' => TRUE,
+  );
+  if (!empty($group)) {
+    $i = 1;
+    foreach ($group as $g => $content_array) {
+      $element['tab'][$i] = array(
+        '#type' => 'fieldset',
+        '#title' => $g,
+        '#collapsible' => TRUE,
+        '#group' => 'tab',
+      );
+
+      $links = array();
+      if (!empty($content_array)) {
+        foreach ($content_array as $delta => $content) {
+          $module = $content['module'];
+          $links[] = ctools_ajax_text_button(check_markup($content['info']), 'builder/nojs/content/add/' . $builder_id . '/' . $row_id . '/' . $column_id . '/' . $module . '/' . $delta, t('!module: !delta: !title', array(
+            '!module' => $module,
+            '!delta' => $delta,
+            '!title' => $content['info']
+          )));
+        }
+
+        $element['tab'][$i]['content'] = array(
+          '#markup' => $search_filter_input . theme('item_list', array(
+            'type' => 'ul',
+            'title' => NULL,
+            'items' => $links,
+            'attributes' => array('class' => array('builder-ui-content-list-all'))
+          )),
+          '#group' => 'tab',
+        );
+      }
+
+      $i++;
+    }
+  }
+  $output .= render($element);
+  $output .= '</div>';
+
+  return $output;
+}
+
+function theme_builder_ui_dropdown($vars) {
+  // Provide a unique identifier for every dropdown on the page.
+  static $id = 0;
+  $id++;
+
+  $class = 'ctools-dropdown-no-js ctools-dropdown' . ($vars['class'] ? (' ' . $vars['class']) : '');
+
+  ctools_add_js('dropdown');
+  ctools_add_css('dropdown');
+
+  $output = '';
+
+  $output .= '<div class="' . $class . '" id="ctools-dropdown-' . $id . '">';
+  $output .= '<div class="ctools-dropdown-link-wrapper">';
+  if ($vars['image']) {
+    $output .= '<a href="#" class="ctools-dropdown-link ctools-dropdown-image-link">' . $vars['title'] . '</a>';
+  }
+  else {
+    $output .= '<a href="#" class="ctools-dropdown-link ctools-dropdown-text-link">' . check_plain($vars['title']) . '</a>';
+  }
+
+  $output .= '</div>'; // wrapper
+  $output .= '<div class="ctools-dropdown-container-wrapper">';
+  $output .= '<div class="ctools-dropdown-container">';
+  $output .= theme('item_list', array(
+    'items' => $vars['links'],
+    'title' => NULL,
+    'type' => 'ul',
+    'attributes' => array()
+  ));
+  $output .= '</div>'; // container
+  $output .= '</div>'; // container wrapper
+  $output .= '</div>'; // dropdown
+  return $output;
+}
+
+/**
+ * Implements of hook_builder_content_info()
+ */
+function builder_builder_content_info() {
+  $blocks = _block_rehash();
+  $contents = array();
+  if (!empty($blocks)) {
+    foreach ($blocks as $key => $block) {
+      $contents[$block['delta']] = array(
+        'info' => $block['info'],
+        'type' => 'block',
+        'group' => t('Block'),
+        // This is name of group to collect contents in a tab
+        'block_module' => $block['module'],
+      );
+    }
+  }
+
+
+  // node add content
+
+  $contents['node'] = array(
+    'info' => t('Adding existing node'),
+    'group' => t('Node'),
+  );
+
+  //Custom text
+  $contents['custom_text'] = array(
+    'info' => t('Custom text'),
+    'group' => t('Text'),
+  );
+
+  // Custom heading
+  $contents['custom_heading'] = array(
+    'info' => t('Custom heading'),
+    'group' => t('Text'),
+    'no_title' => TRUE,
+  );
+  // Insert image 
+  $contents['image'] = array(
+    'info' => t('Insert an image'),
+    'group' => t('Image'),
+  );
+
+  $contents['youtube'] = array(
+    'info' => t('Youtube'),
+    'group' => t('Video'),
+  );
+  $contents['vimeo'] = array(
+    'info' => t('Vimeo'),
+    'group' => t('Video'),
+  );
+
+  $contents['icon'] = array(
+    'info' => t('Icon'),
+    'group' => t('Icon'),
+  );
+  return $contents;
+}
+
+/**
+ * Implements of hook_builder_content_configure($delta = '', $content = array())
+ */
+function builder_builder_content_configure($delta = '', $content = array()) {
+
+  $form = array();
+  switch ($delta) {
+    case 'node':
+      $form['nid'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Enter node ID or title'),
+        '#default_value' => !empty($content['settings']['nid']) ? $content['settings']['nid'] : '',
+        '#autocomplete_path' => 'builder/autocomplete/node',
+        '#required' => TRUE,
+      );
+      $view_modes_options = array();
+      $view_modes = builder_get_entity_view_modes('node');
+      if (!empty($view_modes)) {
+        foreach ($view_modes as $key => $vm) {
+          $view_modes_options[$key] = $vm['label'];
+        }
+      }
+      $form['view_mode'] = array(
+        '#type' => 'select',
+        '#title' => t('View mode'),
+        '#options' => $view_modes_options,
+        '#default_value' => isset($content['settings']['view_mode']) ? $content['settings']['view_mode'] : 'full',
+      );
+      $form['hide_node_title'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Hide node title'),
+        '#default_value' => isset($content['settings']['hide_node_title']) ? $content['settings']['hide_node_title'] : FALSE,
+      );
+      break;
+
+    case 'custom_text':
+      $form['custom_text'] = array(
+        '#type' => 'text_format',
+        '#title' => t('Custom text'),
+        '#default_value' => isset($content['settings']['custom_text']['value']) ? $content['settings']['custom_text']['value'] : '',
+        '#format' => isset($content['settings']['custom_text']['format']) ? $content['settings']['custom_text']['format'] : filter_default_format(),
+      );
+
+      break;
+
+    case 'custom_heading':
+      $form['title'] = array(
+        '#type' => 'hidden',
+        '#title' => t('Title'),
+        '#maxlength' => 255,
+        '#default_value' => '',
+        '#weight' => -19,
+      );
+      $form['text'] = array(
+        '#type' => 'textarea',
+        '#title' => t('Text'),
+        '#default_value' => isset($content['settings']['text']) ? $content['settings']['text'] : '',
+      );
+      $form['link'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Link'),
+        '#default_value' => isset($content['settings']['link']) ? $content['settings']['link'] : '',
+        '#description' => t('Add custom link url to your heading. Examples: <em>node/1</em>, or <em>http://domain.com/</em>'),
+      );
+      $tag_options = array('h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'span');
+      $form['tag'] = array(
+        '#type' => 'select',
+        '#title' => t('Element tag'),
+        '#default_value' => isset($content['settings']['tag']) ? $content['settings']['tag'] : 'h5',
+        '#options' => array_combine($tag_options, $tag_options),
+      );
+      $text_align_options = array('left', 'right', 'center', 'justify');
+      $form['text_align'] = array(
+        '#type' => 'select',
+        '#title' => t('Text alignment'),
+        '#default_value' => isset($content['settings']['text_align']) ? $content['settings']['text_align'] : 'left',
+        '#options' => array_combine($text_align_options, $text_align_options),
+      );
+      $form['font_size'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Font size'),
+        '#default_value' => isset($content['settings']['font_size']) ? $content['settings']['font_size'] : '',
+      );
+      $form['text_color'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Text color'),
+        '#default_value' => isset($content['settings']['text_color']) ? $content['settings']['text_color'] : '',
+        '#attributes' => array('class' => array('builder-color-selector-input')),
+        '#prefix' => '<div class="builder-color-selector-wrapper">',
+        '#suffix' => '<div class="builder-color-selector"></div></div>'
+      );
+      $form['custom_css_class'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Extra css class'),
+        '#default_value' => isset($content['settings']['custom_css_class']) ? $content['settings']['custom_css_class'] : '',
+      );
+      break;
+
+    case 'image':
+      $form['image'] = array(
+        '#type' => 'managed_file',
+        '#title' => t('Upload image'),
+        '#description' => t('Allowed extensions: gif png jpg jpeg'),
+        '#default_value' => isset($content['settings']['image']) ? $content['settings']['image'] : '',
+        '#upload_location' => 'public://',
+        '#upload_validators' => array(
+          'file_validate_extensions' => array('gif png jpg jpeg'),
+          // Pass the maximum file size in bytes
+          'file_validate_size' => array(10 * 3024 * 3024),
+        ),
+        '#required' => TRUE,
+      );
+      $form['title'] = array(
+        '#default_value' => isset($content['settings']['title']) ? $content['settings']['title'] : '',
+        '#title' => t('Title'),
+        '#type' => 'textfield',
+      );
+      $form['image_alt'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Image alt'),
+        '#default_value' => isset($content['settings']['image_alt']) ? $content['settings']['image_alt'] : '',
+      );
+
+      if (module_exists('image')) {
+        $image_style_options = array('' => t('None'));
+        $img_styles = image_styles();
+        if (!empty($img_styles)) {
+          foreach ($img_styles as $k => $v) {
+            $image_style_options[$v['name']] = $v['label'];
+          }
+        }
+        $form['image_style'] = array(
+          '#type' => 'select',
+          '#title' => t('Image style'),
+          '#description' => t('Use your image style for image view. Default will be original of your image.'),
+          '#default_value' => isset($content['settings']['image_style']) ? $content['settings']['image_style'] : '',
+          '#options' => $image_style_options,
+        );
+      }
+
+      $form['image_link'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Image link'),
+        '#default_value' => isset($content['settings']['image_link']) ? $content['settings']['image_link'] : '',
+      );
+      break;
+
+    case 'youtube':
+
+      $form['youtube_url'] = array(
+        '#title' => t('Youtube video URL'),
+        '#type' => 'textfield',
+        '#default_value' => isset($content['settings']['youtube_url']) ? $content['settings']['youtube_url'] : '',
+        '#required' => TRUE,
+      );
+      $form['video_width'] = array(
+        '#title' => t('Width'),
+        '#type' => 'textfield',
+        '#default_value' => isset($content['settings']['video_width']) ? $content['settings']['video_width'] : 640,
+        '#required' => TRUE,
+      );
+      $form['video_height'] = array(
+        '#title' => t('Height'),
+        '#type' => 'textfield',
+        '#default_value' => isset($content['settings']['video_height']) ? $content['settings']['video_height'] : 390,
+        '#required' => TRUE,
+      );
+      $form['video_auto_play'] = array(
+        '#title' => t('Auto play'),
+        '#type' => 'checkbox',
+        '#default_value' => isset($content['settings']['video_auto_play']) ? $content['settings']['video_auto_play'] : FALSE,
+        '#description' => t('Check if you want video auto play on page load.'),
+      );
+      $form['video_responsive'] = array(
+        '#title' => t('Responsive'),
+        '#type' => 'checkbox',
+        '#default_value' => isset($content['settings']['video_responsive']) ? $content['settings']['video_responsive'] : 1,
+        '#description' => t('Play the video automatically on load.'),
+      );
+      $form['#validate'][] = 'builder_youtube_video_validate';
+      break;
+
+    case 'vimeo':
+
+      $form['vimeo_url'] = array(
+        '#title' => t('Vimeo URL'),
+        '#type' => 'textfield',
+        '#default_value' => isset($content['settings']['vimeo_url']) ? $content['settings']['vimeo_url'] : '',
+        '#required' => TRUE,
+      );
+      $form['video_width'] = array(
+        '#title' => t('Width'),
+        '#type' => 'textfield',
+        '#default_value' => isset($content['settings']['video_width']) ? $content['settings']['video_width'] : 640,
+        '#required' => TRUE,
+      );
+      $form['video_height'] = array(
+        '#title' => t('Height'),
+        '#type' => 'textfield',
+        '#default_value' => isset($content['settings']['video_height']) ? $content['settings']['video_height'] : 390,
+        '#required' => TRUE,
+      );
+      $form['video_auto_play'] = array(
+        '#title' => t('Auto play'),
+        '#type' => 'checkbox',
+        '#default_value' => isset($content['settings']['video_auto_play']) ? $content['settings']['video_auto_play'] : FALSE,
+        '#description' => t('Play the video automatically on load. Defaults to 0. Note that this won’t work on some devices.'),
+      );
+      $form['video_responsive'] = array(
+        '#title' => t('Responsive'),
+        '#type' => 'checkbox',
+        '#default_value' => isset($content['settings']['video_responsive']) ? $content['settings']['video_responsive'] : 1,
+        '#description' => t('Check if you want video embed auto resize fit your column.'),
+      );
+      $form['#validate'][] = 'builder_vimeo_validate';
+      break;
+
+    case 'icon':
+      $form['title'] = array(
+        '#default_value' => '',
+        '#type' => 'hidden',
+      );
+
+      $default_selected_icon = !empty($content['settings']['icon']) ? $content['settings']['icon'] : 'fa fa-adjust';
+      $form['icon'] = array(
+        '#type' => 'hidden',
+        '#title' => t('Icon'),
+        '#default_value' => $default_selected_icon,
+        '#attributes' => array('class' => array('builder-ui-content-icon-selected')),
+        '#suffix' => '<div class="builder-ui-content-icon-markup"><span class="selected-icon"><i class="' . $default_selected_icon . '"></i></span><span class="selector-button"><i class="fip-fa fa fa-arrow-up"></i></span></div>',
+      );
+      $form['markup'] = array(
+        '#type' => 'markup',
+        '#markup' => theme('builder_ui_fontawesome', array('selected' => $default_selected_icon)),
+      );
+
+      $form['color'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Icon color'),
+        '#default_value' => isset($content['settings']['color']) ? $content['settings']['color'] : '',
+        '#attributes' => array('class' => array('builder-color-selector-input')),
+        '#prefix' => '<div class="builder-color-selector-wrapper">',
+        '#suffix' => '<div class="builder-color-selector"></div></div>'
+      );
+
+      $form['shape'] = array(
+        '#type' => 'select',
+        '#title' => t('Background shape'),
+        '#options' => array(
+          '' => t('None'),
+          'rounded' => t('Circle'),
+          'boxed' => t('Square'),
+          'rounded-less' => t('Rounded'),
+        ),
+        '#default_value' => isset($content['settings']['shape']) ? $content['settings']['shape'] : '',
+      );
+      $form['background_color'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Background color'),
+        '#default_value' => isset($content['settings']['background_color']) ? $content['settings']['background_color'] : '',
+        '#attributes' => array('class' => array('builder-color-selector-input')),
+        '#prefix' => '<div class="builder-color-selector-wrapper">',
+        '#suffix' => '<div class="builder-color-selector"></div></div>'
+      );
+
+      $form['size'] = array(
+        '#type' => 'select',
+        '#title' => t('Size'),
+        '#options' => array(
+          'xs' => t('Mini'),
+          'sm' => t('Small'),
+          'md' => t('Medium'),
+          'lg' => t('Large'),
+          'xl' => t('Extra large'),
+        ),
+        '#default_value' => isset($content['settings']['size']) ? $content['settings']['size'] : 'md',
+      );
+
+      $form['link'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Link'),
+        '#default_value' => isset($content['settings']['link']) ? $content['settings']['link'] : '',
+      );
+      $form['extra_class_name'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Extra class name'),
+        '#default_value' => isset($content['settings']['extra_class_name']) ? $content['settings']['extra_class_name'] : '',
+      );
+      break;
+  }
+
+
+  return $form;
+}
+
+/**
+ * Implements of hook_builder_content_view()
+ */
+function builder_builder_content_view($delta = '', $content = array()) {
+  if (isset($content['type']) && $content['type'] == 'block') {
+    $block = block_load($content['block_module'], $delta);
+    if (!empty($block)) {
+      $block_content = _block_render_blocks(array($block));
+      if (!empty($block_content)) {
+        foreach ($block_content as $key => $object) {
+          $block_content[$key]->subject = '';
+        }
+        $build = _block_get_renderable_array($block_content);
+        $block_rendered = drupal_render($build);
+        $content['content'] = $block_rendered;
+      }
+    }
+  }
+  switch ($delta) {
+    case 'node':
+
+      $node_content = '';
+      if (!empty($content['settings']['nid'])) {
+        $nid = $content['settings']['nid'];
+        if ($node = node_load($nid)) {
+          if (isset($content['settings']['hide_node_title']) && $content['settings']['hide_node_title']) {
+            // hide node title.
+            $node->title = FALSE;
+          }
+          $node_view = node_view($node, $content['settings']['view_mode']);
+
+          $node_content = render($node_view);
+        }
+      }
+      $content['content'] = $node_content;
+      break;
+
+
+    case 'custom_text':
+      $custom_text_value = isset($content['settings']['custom_text']['value']) ? $content['settings']['custom_text']['value'] : '';
+      if (isset($content['settings']['custom_text']['format'])) {
+        $custom_text_value = check_markup($custom_text_value, $content['settings']['custom_text']['format']);
+      }
+      $content['content'] = $custom_text_value;
+      break;
+
+    case 'custom_heading':
+      $content['content'] = theme('builder_content_custom_heading', array('content' => $content));
+      break;
+
+    case 'image':
+      $image_content = '';
+      if (!empty($content['settings']['image'])) {
+        $fid = $content['settings']['image'];
+        $file = file_load($fid);
+        if ($file) {
+          if (!empty($content['settings']['image_style'])) {
+            $image = array(
+              'style_name' => $content['settings']['image_style'],
+              // style name
+              'path' => $file->uri,
+              'alt' => isset($content['settings']['image_alt']) ? check_plain($content['settings']['image_alt']) : '',
+              'title' => isset($content['title']) ? check_plain($content['title']) : '',
+            );
+
+            $image_content = theme('image_style', $image);
+          }
+          else {
+
+            $image = array(
+              'path' => $file->uri,
+              'alt' => isset($content['settings']['image_alt']) ? check_plain($content['settings']['image_alt']) : '',
+              'title' => isset($content['title']) ? check_plain($content['title']) : '',
+            );
+            $image_content = theme('image', $image);
+          }
+        }
+      }
+
+      if (!empty($content['settings']['image_link'])) {
+        $image_url = '#';
+        $img_link = $content['settings']['image_link'];
+        if ($img_link !== '#') {
+          $image_url = url(trim($img_link));
+          $image_content = '<a href="' . $image_url . '">' . $image_content . '</a>';
+        }
+      }
+      $content['content'] = $image_content;
+
+      break;
+
+    case 'youtube':
+      $youtube_content = '';
+      if (!empty($content['settings']['youtube_url'])) {
+        $youtube_url = $content['settings']['youtube_url'];
+        $youtube_id = builder_youtube_video_id($youtube_url);
+        if ($youtube_id) {
+          $auto_play = 0;
+          $width = isset($content['settings']['video_width']) ? $content['settings']['video_width'] : 640;
+          $height = isset($content['settings']['video_height']) ? $content['settings']['video_height'] : 390;
+          $class = 'builder-video-wrapper';
+          if (isset($content['settings']['video_responsive']) && $content['settings']['video_responsive']) {
+            $class .= ' builder-video-responsive';
+          }
+          if (isset($content['settings']['video_auto_play']) && $content['settings']['video_auto_play']) {
+            $auto_play = 1;
+          }
+          $youtube_content = '<div class="' . $class . '"><iframe width="' . $width . '" height="' . $height . '" src="http://www.youtube.com/embed/' . $youtube_id . '?rel=0&hd=1&autoplay=' . $auto_play . '" frameborder="0" allowfullscreen></iframe></div>';
+        }
+      }
+      $content['content'] = $youtube_content;
+
+      break;
+
+    case 'vimeo':
+      $vimeo_content = '';
+      if (!empty($content['settings']['vimeo_url'])) {
+        $vimeo_url = $content['settings']['vimeo_url'];
+        $vimeo_id = builder_vimeo_video_id($vimeo_url);
+        if ($vimeo_id) {
+          $auto_play = 0;
+          $width = isset($content['settings']['video_width']) ? $content['settings']['video_width'] : 640;
+          $height = isset($content['settings']['video_height']) ? $content['settings']['video_height'] : 390;
+          $class = 'builder-video-wrapper';
+          if (isset($content['settings']['video_responsive']) && $content['settings']['video_responsive']) {
+            $class .= ' builder-video-responsive';
+          }
+          if (isset($content['settings']['video_auto_play']) && $content['settings']['video_auto_play']) {
+            $auto_play = 1;
+          }
+          $vimeo_content = '<div class="' . $class . '"><iframe src="//player.vimeo.com/video/' . $vimeo_id . '?autoplay=' . $auto_play . '" width="' . $width . '" height="' . $height . '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>';
+        }
+      }
+      $content['content'] = $vimeo_content;
+
+      break;
+
+
+    case 'icon':
+      $icon_content = '';
+      if (!empty($content)) {
+        $icon_content = theme('builder_content_icon', array('content' => $content));
+      }
+      $content['content'] = $icon_content;
+      break;
+  }
+
+  return $content;
+}
+
+/**
+ * Hook_builder_content_export_alter($zip , $content)
+ */
+function builder_builder_content_export_alter(&$zip, &$content) {
+  $files = array();
+  $j = 1;
+  if ($content['module'] == 'builder' && $content['delta'] == 'image') {
+    if (!empty($content['settings']['image'])) {
+      for ($i = 0; $i < $zip->numFiles; $i++) {
+        if ($name = $zip->getNameIndex($i)) {
+          $files[] = $name;
+        }
+      }
+      if ($file = file_load($content['settings']['image'])) {
+        $filename = $file->filename;
+        if (!empty($files) && in_array($filename, $files)) {
+          $unique = builder_generate_unique();
+          $filename = $j . '_' . $unique . '_' . $filename;
+          $j++;
+          $files[] = $filename;
+        }
+        $zip->addFile(drupal_realpath($file->uri), $filename);
+        $content['settings']['image'] = $filename; // add file name location callback for settings data in settings.txt (zip file).
+      }
+    }
+  }
+}
+
+/**
+ * Hook_builder_content_import_alter($files , $content)
+ */
+function builder_builder_content_import_alter($files, &$content) {
+  if ($content['module'] == 'builder' && $content['delta'] == 'image') {
+    if (!empty($content['settings']['image'])) {
+      $filename = $content['settings']['image'];
+      if (!empty($files[$filename])) {
+        $fid = $files[$filename];
+        $content['settings']['image'] = $fid; // add file name location callback for settings data in settings.txt (zip file).
+      }
+    }
+  }
+}
+
+/**
+ * Determine whether the user has a given privilege.
+ *
+ * @param $string
+ *   The content delta, such as "administer nodes", being checked for.
+ * @param $account
+ *   (optional) The account to check, if not given use currently logged in user.
+ *
+ * @return
+ *   Boolean TRUE if the current user has the requested permission.
+ *
+ * All permission checks in Drupal should go through this function. This
+ * way, we guarantee consistent behavior, and ensure that the superuser
+ * can perform all actions.
+ */
+function builder_content_access($string, $account = NULL) {
+  global $user;
+
+  if (!isset($account)) {
+    $account = $user;
+  }
+
+  // User #1 has all privileges:
+  if ($account->uid == 1) {
+    return TRUE;
+  }
+
+  // To reduce the number of SQL queries, we cache the user's permissions
+  // in a static variable.
+  // Use the advanced drupal_static() pattern, since this is called very often.
+  static $drupal_static_fast;
+  if (!isset($drupal_static_fast)) {
+    $drupal_static_fast['builder_content_perm'] = &drupal_static(__FUNCTION__);
+  }
+  $perm = &$drupal_static_fast['builder_content_perm'];
+  if (!isset($perm[$account->uid])) {
+    $role_permissions = _builder_content_permissions($account->roles);
+
+    $perms = array();
+    foreach ($role_permissions as $one_role) {
+      $perms += $one_role;
+    }
+    $perm[$account->uid] = $perms;
+  }
+
+  return isset($perm[$account->uid][$string]);
+}
+
+/**
+ * Implements of hook_builder_content_clone_alter($delta, &$content)
+ */
+function builder_builder_content_clone_alter($delta, &$content) {
+  switch ($delta) {
+    case 'image':
+      if (!empty($content['settings']['image'])) {
+        $fid = $content['settings']['image'];
+        if ($file = file_load($fid)) {
+          $destination = 'public://';
+          $new_file = file_copy($file, $destination);
+          if ($new_file && !empty($new_file->fid)) {
+            $content['settings']['image'] = $new_file->fid;
+          }
+        }
+      }
+      break;
+  }
+}
+
+/**
+ * Implements of hook_builder_content_saved_alter($delta, $content, $bid)
+ */
+function builder_builder_content_saved_alter($delta = '', $content, $bid) {
+  switch ($delta) {
+    case 'image':
+      if (!empty($content['settings']['image'])) {
+        $fid = $content['settings']['image'];
+        if ($file = file_load($fid)) {
+          if (!$file->status) {
+            $file->status = FILE_STATUS_PERMANENT;
+            file_save($file);
+            file_usage_add($file, 'builder', 'builder', $bid);
+          }
+        }
+      }
+      break;
+  }
+}
+
+/**
+ * Implements of hook_field_prepare_translation()
+ */
+function builder_field_prepare_translation($entity_type, $entity, $field, $instance, $langcode, &$items, $source_entity, $source_langcode) {
+  // If the translating user is not permitted to use the assigned text format,
+  // we must not expose the source values.
+
+
+  switch ($instance['widget']['type']) {
+    case 'builder_widget':
+      if (function_exists('i18n_sync')) {
+        i18n_sync(FALSE);
+      }
+      if (!empty($items)) {
+        foreach ($items as $delta => $item) {
+          if (!empty($item['bid'])) {
+             $items[$delta]['bid'] = _builder_data_clone($item['bid']);
+          }
+        }
+      }
+
+
+      break;
+  }
+}

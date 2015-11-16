@@ -1,0 +1,145 @@
+<?php
+/**
+ * @File: md_media.module
+ * @Author: MegaDrupal
+ * Website: http://megadrupal.com/
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function md_media_menu() {
+  $items = array();
+
+  $items['md-media/upload'] = array(
+    'page callback' => '_md_media_upload',
+    'access callback' => 'user_is_logged_in',
+    'type' => MENU_CALLBACK
+  );
+  $items['md-media/library'] = array(
+    'page callback' => '_md_media_library',
+    'page arguments' => array('library'),
+    'access arguments' => array('view media library'),
+    'type' => MENU_CALLBACK
+  );
+  $items['md-media/my-files'] = array(
+    'page callback' => '_md_media_library',
+    'page arguments' => array('my_files'),
+    'access callback' => 'user_is_logged_in',
+    'type' => MENU_CALLBACK
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_image_default_styles().
+ */
+function md_media_image_default_styles() {
+  return array(
+    'md_media_thumbnail' => array(
+      'label' => t('MDMedia file thumbnail'),
+      'effects' => array(
+        array(
+          'name' => 'image_scale_and_crop',
+          'data' => array('width' => 60, 'height' => 60, 'upscale' => 1),
+          'weight' => 0,
+        ),
+      )
+    )
+  );
+} 
+
+/**
+ * Callback to accept file upload
+ */
+function _md_media_upload() {
+  $output = array(
+    'status' => 0,
+    'file' => FALSE
+  );
+
+  // get location save file
+  $location = "public:/";
+  $sub_folder = variable_get('ac_media_sub_folder', '');
+  $file_folder_existed = TRUE;
+  if ($sub_folder) {
+    $location = sprintf('%s/%s', $location, trim($sub_folder, '/'));
+    $file_folder_existed = file_prepare_directory($location, FILE_CREATE_DIRECTORY);
+  }
+
+  if ($file_folder_existed) {
+    $file_content = file_get_contents($_FILES['awe_file']['tmp_name']);
+    if ($file = file_save_data($file_content, "$location/{$_FILES['awe_file']['name']}")) {
+      $file->file_url = file_create_url($file->uri);
+      $file->libraryThumbnail = image_style_url('md_media_thumbnail', $file->uri);
+      $file->is_new = true;
+      if(isset($_POST['style'])) {
+        $file->style = $_POST['style'] == 'none' ? $file->file_url : image_style_url($_POST['style'], $file->uri);
+      }
+      if(isset($_POST['thumb'])){
+        $file->thumb = $_POST['thumb'] == 'none' ?  $file->file_url : image_style_url($_POST['thumb'], $file->uri);
+      }
+      $output = array(
+        'status' => 1,
+        'file' => $file
+      );
+    }
+  }
+
+  drupal_json_output($output);
+}
+
+/**
+ * Callback to get library info
+ */
+function _md_media_library($type) {
+  $output = array(
+    'files' => array(),
+    'allowed_load_more' => FALSE
+  );
+
+  // Get file saved data
+  $start = (isset($_POST['file_start']) && intval($_POST['file_start']) > 0) ? intval($_POST['file_start']) : 0;
+  $conditions = db_and();
+  if (isset($type) && $type == 'my_files') {
+    global $user;
+    $conditions->condition('uid', $user->uid);
+  }
+  else
+    $conditions->condition('uri', db_like('public://').'%', 'LIKE');
+  $files = db_select('file_managed', 'file')
+    ->fields('file')
+    ->range($start, 25)
+    ->condition($conditions)
+    ->orderBy('timestamp', 'DESC')
+    ->execute()
+    ->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+
+  // Check files allow to load more ajax
+  if (count($files) == 25) {
+    $output['allowed_load_more'] = TRUE;
+    array_pop($files);
+  }
+
+  // Add library thumbnail to file
+  foreach ($files as $file) {
+    $file->libraryThumbnail = image_style_url('md_media_thumbnail', $file->uri);
+    $file->file_url = file_create_url($file->uri);
+  }
+  $output['files'] = $files;
+
+  drupal_json_output($output);
+}
+
+/**
+ * Implements hook_permission().
+ */
+function md_media_permission() {
+  return array(
+    'view media library' => array(
+      'title' => t('View all public files in library'),
+      'description' => t('Allows to view all public file in libraries')
+    )
+  );
+}

@@ -1,0 +1,275 @@
+.awe-tabs {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: none;
+    border-color: transparent;
+    background-color: transparent;
+}
+.awe-tabs > .select-tab > .ui-tabs-nav {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: none;
+    border-color: transparent;
+    background-color: transparent;
+}
+.awe-tabs > .select-tab > .ui-tabs-nav > li {
+    font-weight: normal;
+    border: none;
+    cursor: pointer;
+    margin: 0;
+    border-radius: 0;
+    background: none;
+    border-color: transparent;
+    background-color: transparent;
+}
+.awe-tabs > .select-tab > .ui-tabs-nav > li > .ui-tabs-anchor {
+    color: #fff;
+    float: none;
+    padding: 13px;
+    cursor: pointer;
+    text-align: center;
+}
+.awe-tabs > .select-tab > .ui-tabs-nav > li.ui-tabs-active {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.awe-tabs > .select-tab > .ui-tabs-nav > li.ui-tabs-active > .ui-tabs-anchor {
+    cursor: pointer;
+}
+.awe-tabs > .select-tab > .ui-helper-reset {
+    line-height: 0;
+}
+
+/* Custom for tabs */
+
+.awe-tabs > .select-tab > .ui-tabs-nav {
+    margin: 0 -2.5px;
+}
+.awe-tabs > .select-tab > .ui-tabs-nav > li {
+    margin: 0 2.5px;
+    position: relative;
+    display: inline-block;
+    background: none;
+}
+.awe-tabs > .select-tab > .ui-tabs-nav > li:after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 5px;
+    background: transparent;
+    position: absolute;
+    top: -5px;
+    right: 0;
+}
+.awe-tabs > .select-tab > .cus-tab-item li {
+    margin: 0;
+    font-size: 15px;
+}
+.awe-tabs > .select-tab > .ui-tabs-nav > li > .ui-tabs-anchor {
+    color: #403F3F;
+    font-size: 14px;
+    height: 40px;
+    line-height: 40px;
+    min-width: 100px !important;
+    text-align: left;
+    display: block;
+    padding: 0 15px 0 15px;
+    background-color: #D4D4D4;
+    border-radius: 4px 4px 0 0;
+    -webkit-transition: background-color 0.2s, color 0.2s;
+    -moz-transition: background-color 0.2s, color 0.2s;
+    -ms-transition: background-color 0.2s, color 0.2s;
+    -o-transition: background-color 0.2s, color 0.2s;
+    transition: background-color 0.2s, color 0.2s;
+}
+.awe-tabs > .select-tab > .ui-tabs-nav > li:hover,
+.awe-tabs > .select-tab > .ui-tabs-nav > li.ui-tabs-active,
+.awe-tabs > .select-tab > .ui-tabs-nav > li.ui-sortable-helper {
+    background: none;
+}
+.awe-tabs > .select-tab > .ui-tabs-nav > li:hover > .ui-tabs-anchor,
+.awe-tabs > .select-tab > .ui-tabs-nav > li.ui-tabs-active > .ui-tabs-anchor,
+.awe-tabs > .select-tab > .ui-tabs-nav > li.ui-sortable-helper .ui-tabs-anchor {
+    color: #fff;
+    background-color: #E93C4F;
+}
+.awe-tabs > .select-tab > .ui-tabs-nav > li.ui-sortable-helper > .ui-tabs-anchor {
+    cursor: all-scroll;
+}
+.awe-tabs > .select-tab > .ui-tabs-nav > li:hover .cus-tab-item,
+.awe-tabs > .select-tab > .ui-tabs-nav > li.ui-sortable-helper .cus-tab-item {
+    opacity: 1;
+    visibility: visible;
+}
+.awe-tabs > .select-tab {
+    border: 2px solid #212122;
+    border-width: 0 0 2px 0;
+}
+.awe-tabs > .select-tab:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+.awe-tabs > .select-tab > .ui-tabs-nav {
+    font-size: 0;
+    display: inline-block;
+    vertical-align: bottom;
+}
+.awe-tabs > .select-tab > .ui-tabs-nav .awe-new-tab {
+    width: 30px !important;
+    height: 30px !important;
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 5px 2.5px 5px 2.5px;
+    text-align: center;
+    display: inline-block;
+    display: none;
+    vertical-align: bottom;
+    background-color: #EEEEEE;
+}
+.awe-tabs > .select-tab > .ui-tabs-nav > li.awe-new-tab:hover {
+    background-color: #ddd;
+}
+.awe-tabs > .select-tab > .ui-tabs-nav .awe-new-tab i {
+    color: #fff;
+    font-size: 12px;
+    line-height: 30px;
+}
+.awe-tabs > .select-tab > .ui-tabs-nav .awe-new-tab:hover i {
+
+}
+.awe-tabs > .select-tab > .ui-tabs-panel {
+    padding: 0;
+}
+.awe-tabs > .select-tab > .awe-section.creating {
+    margin:0;
+}
+.awe-tabs > .select-tab > .md-content-tab {
+    padding: 22px 0;
+}
+.awe-tabs > .select-tab > .md-content-tab .container {
+    width: 100%;
+}
+.awe-tabs > .select-tab > .md-content-tab .awe-section {
+    margin: 0;
+}
+.awe-tabs > .select-tab > .md-content-tab .custom-section {
+    left: 0;
+}
+.awe-tabs > .select-tab > .md-content-tab .awe-section:hover > .custom-section {}
+
+
+
+
+
+/*
+    Define style for tabs
+    Note: Add  class to postion of class "awe-tabs"
+*/
+
+/*++++ tabs-title-center / tabs-title-right / tabs-center / tabs-right / tabs-vertical-left / tabs-vertical-right / tabs-bottom ++++*/
+
+.awe-tabs > .select-tab > .tabs-title-center > .ui-tabs-nav > li > .ui-tabs-anchor {
+    text-align: center;
+}
+.awe-tabs > .select-tab > .tabs-title-right > .ui-tabs-nav > li > .ui-tabs-anchor {
+    text-align: right;
+}
+.awe-tabs.tabs-center > .select-tab {
+    text-align: center;
+}
+.awe-tabs.tabs-right > .select-tab {
+    text-align: right;
+}
+.awe-tabs.tabs-right > .select-tab > .ui-tabs-nav > li {
+    float: right;
+}
+.awe-tabs.tabs-vertical-left,
+.awe-tabs.tabs-vertical-right {
+    width: 100%;
+    display: table;
+}
+.awe-tabs.tabs-vertical-left  > .select-tab,
+.awe-tabs.tabs-vertical-right > .select-tab {
+    width: 140px;
+    display: table-cell;
+    vertical-align: top;
+}
+.awe-tabs.tabs-vertical-left > .md-content-tab,
+.awe-tabs.tabs-vertical-right > .md-content-tab {
+    display: table-cell;
+    vertical-align: top;
+}
+.awe-tabs.tabs-vertical-left .ui-tabs-nav,
+.awe-tabs.tabs-vertical-right .ui-tabs-nav {
+    margin: 0;
+}
+.awe-tabs.tabs-vertical-left  > .select-tab > .ui-tabs-nav > li,
+.awe-tabs.tabs-vertical-right  > .select-tab > .ui-tabs-nav > li {
+    float: none;
+    display: block;
+    border-radius: 0;
+    margin: 0 0 1px 0;
+}
+.awe-tabs.tabs-vertical-left  > .select-tab > .ui-tabs-nav > li > .ui-tabs-anchor,
+.awe-tabs.tabs-vertical-right  > .select-tab > .ui-tabs-nav > li > .ui-tabs-anchor {
+    border-radius: 0;
+}
+.awe-tabs.tabs-vertical-left  > .select-tab {
+    border-width: 0 2px 0 0;
+}
+.awe-tabs.tabs-vertical-right  > .select-tab {
+    border-width: 0 0 0 2px;
+}
+.awe-tabs.tabs-vertical-left  > .select-tab > .ui-tabs-nav,
+.awe-tabs.tabs-vertical-right  > .select-tab > .ui-tabs-nav {
+    display: block;
+}
+.awe-tabs.tabs-vertical-left  > .select-tab > .ui-tabs-nav > .awe-new-tab,
+.awe-tabs.tabs-vertical-right > .select-tab > .ui-tabs-nav > .awe-new-tab {
+    display: block;
+    border-radius: 4px;
+    margin: 1px 0 0 0;
+}
+.awe-tabs.tabs-vertical-left  > .select-tab > .ui-tabs-nav > .awe-new-tab {
+    float: right;
+}
+.awe-tabs.tabs-vertical-right  > .select-tab{
+    float: right;
+}
+.awe-tabs.tabs-vertical-right > .md-content-tab {
+    float: left;
+    width: 240px;
+}
+.awe-tabs.tabs-bottom {
+    position: relative;
+}
+.awe-tabs.tabs-bottom > .select-tab{
+    position: absolute;
+    left: 0;
+    top: 100%;
+    width: 100%;
+}
+.awe-tabs.tabs-bottom  > .select-tab,
+.awe-tabs.tabs-bottom  > .select-tab {
+    border-width: 2px 0 0 0;
+}
+.awe-tabs.tabs-bottom  > .select-tab > .ui-tabs-nav > li a {
+    border-radius: 0 0 4px 4px;
+}
+.awe-tabs .awe-tab-title {
+    display: block;
+    float: left;
+}
+.awe-tabs .awe-tab-icon {
+    display: none;
+    float: left;
+}
+.awe-tabs.awe-tab-icon-enabled .awe-tab-icon {
+    display: block;
+}
+.awe-tabs.awe-tab-icon-right .awe-tab-icon {
+    float: right;
+}

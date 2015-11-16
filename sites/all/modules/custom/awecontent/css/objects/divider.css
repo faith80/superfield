@@ -1,0 +1,42 @@
+.obj-divider {
+    width: 100%;
+    height: 40px;
+    display: table;
+}
+.obj-divider.awe-obj:hover {
+    border-style: dashed;
+}
+.obj-divider .obj-content {
+    display: table-cell;
+    vertical-align: middle;
+}
+.obj-divider .custom-obj {
+    right: auto;
+    left: 50%;
+    margin-left: -44px;
+}
+.awe-divider {
+    margin-left: auto;
+    margin-right: auto;
+}
+.divider-field {
+    display: table;
+    width: 100%;
+}
+.text-divider {
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+    width: 200px;
+    min-width: 200px;
+}
+.divider-left, .divider-right {
+    height: 1px;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+}
+.divider-left > span, .divider-right > span {
+    display: block;
+    border-top: 1px solid #666;
+}

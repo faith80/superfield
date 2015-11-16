@@ -1,0 +1,93 @@
+.awe-image-content {
+    width: 100%;
+}
+.md-item-image {
+    width: 100%;
+    display: block;
+    position: relative;
+    float:left;
+}
+.md-item-image a {
+    display: block;
+}
+.md-item-image {
+    max-width: 100%;
+}
+.md-item-image img {
+    float: left;
+}
+.position-over .awe-image-caption,
+.md-item-image.position-over .awe-image-caption {
+    position: absolute;
+    bottom: 0;
+    z-index: 2;
+}
+.awe-image-caption {
+    max-width: 100%;
+}
+.caption-hover .awe-image-caption,
+.caption-hover .md-item-image  .awe-image-caption,
+.md-item-image.caption-hover .awe-image-caption {
+    visibility: hidden;
+}
+.caption-hover:hover .awe-image-caption,
+.caption-hover .md-item-image:hover .awe-image-caption,
+.md-item-image.caption-hover:hover .awe-image-caption {
+    visibility: visible;
+}
+.disable-caption .awe-image-caption {
+    display: none;
+}
+.caption-hover {
+    overflow: hidden;
+}
+.caption-hover .awe-image-content .awe-image-caption {
+    padding: 20px 15px;
+    font-family: 'Open Sans', sans-serif;
+    opacity: 0;
+    -webkit-transform: translateY(100%);
+       -moz-transform: translateY(100%);
+        -ms-transform: translateY(100%);
+         -o-transform: translateY(100%);
+            transform: translateY(100%);
+    -webkit-transition: all .3s ease;
+       -moz-transition: all .3s ease;
+        -ms-transition: all .3s ease;
+         -o-transition: all .3s ease;
+            transition: all .3s ease;
+}
+.caption-hover .awe-image-content:hover .awe-image-caption {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+       -moz-transform: translateY(0);
+        -ms-transform: translateY(0);
+         -o-transform: translateY(0);
+            transform: translateY(0);
+}
+
+.caption-hover .awe-image-content .awe-image-overlay {
+    opacity: 0;
+    visibility: hidden;
+    top: 20%;
+    -webkit-transition: all .3s ease;
+       -moz-transition: all .3s ease;
+        -ms-transition: all .3s ease;
+         -o-transition: all .3s ease;
+            transition: all .3s ease;
+}
+
+.awe-image-content:hover .awe-image-overlay {
+    opacity: 1;
+    visibility: visible;
+    top: 0;
+}
+
+.awe-image-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: block;
+}

@@ -1,0 +1,7 @@
+name = AWEContent Blank Object
+description = Your custom objects for MD AweContent module description here
+core = 7.x
+version = 7.x-1.0
+package = AweContent Objects
+
+dependencies[] = awecontent

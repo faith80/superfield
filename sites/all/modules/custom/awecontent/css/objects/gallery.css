@@ -1,0 +1,252 @@
+/*AWE GALLERY*/
+
+.awe-gallery .awe-image-container {
+    position: relative;
+    padding-top: 75%;
+    overflow: hidden;
+}
+
+.awe-gallery .md-item-image img {
+    max-width: none;
+    float: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: auto;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+}
+.awe-gallery li.md-item-image {
+    width: 25%;
+}
+.awe-gallery.image-col-1 li.md-item-image {
+    width: 100%;
+}
+.awe-gallery.image-col-2 li.md-item-image {
+    width: 50%;
+}
+.awe-gallery.image-col-3 li.md-item-image {
+    width: 33.33%;
+}
+.awe-gallery.image-col-4 li.md-item-image {
+    width: 25%;
+}
+.awe-gallery.image-col-5 li.md-item-image {
+    width: 20%;
+}
+.awe-gallery.image-col-6 li.md-item-image {
+    width: 16.66%;
+}
+.awe-gallery.image-col-7 li.md-item-image {
+    width: 14.28%;
+}
+.awe-gallery.image-col-8 li.md-item-image {
+    width: 12.25%;
+}
+.awe-gallery.image-col-9 li.md-item-image {
+    width: 11.11%;
+}
+.awe-gallery.image-col-10 li.md-item-image {
+    width: 10%;
+}
+.awe-gallery.image-col-11 li.md-item-image {
+    width: 9.09%;
+}
+.awe-gallery.image-col-12 li.md-item-image {
+    width: 8.33%;
+}
+@media screen and (max-width: 1199px) {
+    .awe-gallery.image-col-md-1 li.md-item-image {
+        width: 100%;
+    }
+    .awe-gallery.image-col-md-2 li.md-item-image {
+        width: 50%;
+    }
+    .awe-gallery.image-col-md-3 li.md-item-image {
+        width: 33.33%;
+    }
+    .awe-gallery.image-col-md-4 li.md-item-image {
+        width: 25%;
+    }
+    .awe-gallery.image-col-md-5 li.md-item-image {
+        width: 20%;
+    }
+    .awe-gallery.image-col-md-6 li.md-item-image {
+        width: 16.66%;
+    }
+    .awe-gallery.image-col-md-7 li.md-item-image {
+        width: 14.28%;
+    }
+    .awe-gallery.image-col-md-8 li.md-item-image {
+        width: 12.25%;
+    }
+    .awe-gallery.image-col-md-9 li.md-item-image {
+        width: 11.11%;
+    }
+    .awe-gallery.image-col-md-10 li.md-item-image {
+        width: 10%;
+    }
+    .awe-gallery.image-col-md-11 li.md-item-image {
+        width: 9.09%;
+    }
+    .awe-gallery.image-col-md-12 li.md-item-image {
+        width: 8.33%;
+    }
+}
+@media screen and (max-width: 991px) {
+    .awe-gallery.image-col-sm-1 li.md-item-image {
+        width: 100%;
+    }
+    .awe-gallery.image-col-sm-2 li.md-item-image {
+        width: 50%;
+    }
+    .awe-gallery.image-col-sm-3 li.md-item-image {
+        width: 33.33%;
+    }
+    .awe-gallery.image-col-sm-4 li.md-item-image {
+        width: 25%;
+    }
+    .awe-gallery.image-col-sm-5 li.md-item-image {
+        width: 20%;
+    }
+    .awe-gallery.image-col-sm-6 li.md-item-image {
+        width: 16.66%;
+    }
+    .awe-gallery.image-col-sm-7 li.md-item-image {
+        width: 14.28%;
+    }
+    .awe-gallery.image-col-sm-8 li.md-item-image {
+        width: 12.25%;
+    }
+    .awe-gallery.image-col-sm-9 li.md-item-image {
+        width: 11.11%;
+    }
+    .awe-gallery.image-col-sm-10 li.md-item-image {
+        width: 10%;
+    }
+    .awe-gallery.image-col-sm-11 li.md-item-image {
+        width: 9.09%;
+    }
+    .awe-gallery.image-col-sm-12 li.md-item-image {
+        width: 8.33%;
+    }
+}
+@media screen and (max-width: 767px) {
+    .awe-gallery.image-col-xs-1 li.md-item-image {
+        width: 100%;
+    }
+    .awe-gallery.image-col-xs-2 li.md-item-image {
+        width: 50%;
+    }
+    .awe-gallery.image-col-xs-3 li.md-item-image {
+        width: 33.33%;
+    }
+    .awe-gallery.image-col-xs-4 li.md-item-image {
+        width: 25%;
+    }
+    .awe-gallery.image-col-xs-5 li.md-item-image {
+        width: 20%;
+    }
+    .awe-gallery.image-col-xs-6 li.md-item-image {
+        width: 16.66%;
+    }
+    .awe-gallery.image-col-xs-7 li.md-item-image {
+        width: 14.28%;
+    }
+    .awe-gallery.image-col-xs-8 li.md-item-image {
+        width: 12.25%;
+    }
+    .awe-gallery.image-col-xs-9 li.md-item-image {
+        width: 11.11%;
+    }
+    .awe-gallery.image-col-xs-10 li.md-item-image {
+        width: 10%;
+    }
+    .awe-gallery.image-col-xs-11 li.md-item-image {
+        width: 9.09%;
+    }
+    .awe-gallery.image-col-xs-12 li.md-item-image {
+        width: 8.33%;
+    }
+}
+
+/*Magnic popup*/
+.mfp-wrap .mfp-container .mdf-list-thumb {
+    position: absolute;
+    bottom: 10px;
+    left: 100px;
+    right: 100px;
+    text-align: center;
+    z-index: 1200;
+}
+.mfp-wrap .mfp-container .mdf-list-thumb img {
+    width: 50px;
+    height: 50px;
+    margin-right: 5px;
+    cursor: pointer;
+    border: 1px solid rgb(16, 31, 20);
+    display: none;
+}
+.mfp-wrap .mfp-container .mdf-list-thumb .img-show {
+    display: inline-block;
+}
+.mfp-wrap .mfp-container .mdf-list-thumb img.active {
+    border : 1px solid blue;
+}
+.mfp-wrap .mfp-container .mdf-list-thumb .thumb-content {
+    display: inline-block;
+    background: rgba(31, 4, 4, 1);
+    padding: 0 20px;
+    position: relative;
+}
+.mfp-wrap .mfp-container .mdf-list-thumb .thumb-content i {
+    position: absolute;
+    top: 20px;
+    color: #FFF;
+}
+.mfp-wrap .mfp-container .mdf-list-thumb .thumb-content i:hover {
+    box-shadow: 1px 1px 1px 1px;
+}
+.mfp-wrap .mfp-container .mdf-list-thumb .thumb-content i.gallery-prev {
+    left: 0;
+    margin-left: 3px;
+}
+.mfp-wrap .mfp-container .mdf-list-thumb .thumb-content i.gallery-next {
+    right: 0;
+    margin-right: 3px;
+}
+.mfp-container .mfp-content .mfp-description {
+    position: absolute;
+    bottom: 100px;
+    line-height: 16px;
+}
+.mfp-content .mfp-figure .mfp-img {
+    padding: 40px 0 100px 0;
+}
+.mfp-content .mfp-figure:after {
+    bottom: 100px;
+}
+
+.mgf-md-popup {
+    width: 100%;
+    height: 100%;
+}
+.awe-image img {
+    max-width: 100%;
+}
+.awe-equal-column > .container > .row > .awe-blank > .awe-col-content {
+    padding:  15px;
+}
+
+.image-thumb {
+    position: relative;
+    overflow: hidden;
+}
+
+.node-unpublished {
+    background-color: inherit;
+}

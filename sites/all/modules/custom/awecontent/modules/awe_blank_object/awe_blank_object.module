@@ -1,0 +1,38 @@
+<?php
+/**
+ * File: awe_blank_object.module
+ * Author: MegaDrupal
+ * Website: http://megadrupal.com/
+ */
+
+/**
+ * implements hook_awecontent_objects_info()
+ * to declare about list objetcs what this module provide
+ */
+function awe_blank_object_awecontent_objects_info() {
+	$objects = array();
+
+	$objects['awe_blank'] = array(
+		'js' => array(
+			drupal_get_path('module', 'awe_blank_object') . '/awecontent-blank-item.js' => array(),
+			drupal_get_path('module', 'awe_blank_object') . '/awe-blank-frontend-item.js' => array('frontend' => TRUE), // use frontend => TRUE to define this js file will be loaded in frontend
+		),
+		'css' => array(
+			drupal_get_path('module', 'awe_blank_object') . '/awe-blank-item.css' => array(),
+			drupal_get_path('module', 'awe_blank_object') . '/awe-blank-frontend-item.css' => array('frontend' => TRUE), // use frontend => TRUE to define this js file will be loaded in frontend
+		),
+		'callback_render' => 'awe_blank_object_render',
+		//'theme_callback' => 'awe_blank_theme_render', // Can use theme to render for item content in frontend
+		'file' => '',
+		'file_path' => ''
+	);
+
+	return $objects;
+}
+
+/**
+ * callback to render object to frontend
+ */
+function awe_blank_object_render($item, $class_rand, $node) {
+	return '<p>Content of this item base on settings</p>';
+}

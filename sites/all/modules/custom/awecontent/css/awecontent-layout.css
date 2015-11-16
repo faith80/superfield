@@ -1,0 +1,130 @@
+.aw-dstable {
+    width: 100%;
+    height: 100%;
+    display: table;
+}
+.aw-dscell {
+    width: 100%;
+    height: 100%;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+.ta-left {
+    text-align: left !important;
+}
+.ta-right {
+    text-align: right !important;
+}
+.ta-center {
+    text-align: center !important;
+}
+.va-top {
+    vertical-align: top !important;
+}
+.va-bottom {
+    vertical-align: bottom !important;
+}
+.va-middle {
+    vertical-align: middle !important;
+}
+
+/* Video background */
+.awe-section iframe {
+    display: block;
+    border: none;
+    outline: none;
+    margin: 0;
+    padding: 0;
+}
+
+.frame-embed {
+    width: 100%;
+    height: 100%;
+    overflow : hidden;
+    position: absolute;
+    top: 0; left: 0;
+}
+.frame-embed > .iframe-video {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0; left: 0;
+}
+.awe-media-control {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1;
+    text-align: center;
+}
+.media-btn {
+    opacity: 0.3;
+    margin: 4px;
+    font-size: 14px;
+    width: 40px;
+    height: 40px;
+    line-height: 36px;
+    cursor: pointer;
+    color: #ffffff;
+    background: none;
+    border: 2px solid #ffffff;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+    border-radius: 50%;
+}
+.media-btn i {
+    line-height: 32px;
+}
+.media-btn:hover {
+    opacity: 1;
+}
+.awe-section-100 .awecontent-section .container {width: 100%}
+#awe-section-wrapper * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.awe-col-content,
+.awe-col-content .awe-item{
+    position: relative;
+}
+
+.disable-caption .awe-image-overlay {
+    display: none !important;
+}
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+    margin: auto !important;
+    width: auto !important;
+}
+.awe-gallery .caption-hover {
+    overflow: visible;
+}
+/** Video responsive */
+.embed-responsive {
+    position: relative;
+    display: block;
+    height: 0;
+    padding: 0;
+    overflow: hidden
+}
+.embed-responsive .embed-responsive-item,.embed-responsive iframe,.embed-responsive embed,.embed-responsive object {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0
+}
+.embed-responsive.embed-responsive-16by9 {
+    padding-bottom: 56.25%
+}
+.embed-responsive.embed-responsive-4by3 {
+    padding-bottom: 75%
+}
+
+/** Video object **/

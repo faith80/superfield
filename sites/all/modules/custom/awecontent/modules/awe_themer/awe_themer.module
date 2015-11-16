@@ -1,0 +1,158 @@
+<?php
+/**
+ * @File: awe_themer.module
+ * @Author: MegaDrupal
+ * Website: http://megadrupal.com/
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function awe_themer_menu() {
+  return array(
+    'admin/awe-content/templates/export' => array(
+      'title' => t('Export'),
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('awe_themer_export_form'),
+      'type' => MENU_LOCAL_TASK,
+      'access arguments' => array(ADMIN_PERM),
+      'weight' => 2
+    ),
+    'admin/awe-content/templates/export/download' => array(
+      'page callback' => 'awe_themer_templates_download',
+      'access arguments' => array(ADMIN_PERM),
+      'type' => MENU_CALLBACK
+    )
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function awe_themer_theme($existing, $type, $theme, $path) {
+  return array(
+    'awe_export_templates' => array(
+      'template' => 'awe-export-templates',
+      'variables' => array('section_templates' => NULL, 'page_templates' => NULL)
+    ),
+    'templates_file' => array(
+      'template' => 'templates-file',
+      'variables' => array('file_name' => '')
+    )
+  );
+}
+
+/**
+ * Create export templates form
+ * @param $form
+ * @param $form_state
+ * @return array
+ */
+function awe_themer_export_form($form, &$form_state) {
+  $form = array();
+
+  // get all templates in site
+  $templates = db_select('awecontent_templates', 'tpl')
+    ->fields('tpl')
+    ->orderBy('created', 'DESC')
+    ->execute()
+    ->fetchALl(PDO::FETCH_CLASS, 'stdClass');
+
+  // prepare templates data
+  $page_templates = array();
+  $section_templates = array();
+  foreach($templates as &$template) {
+    $template->thumbnail = file_create_url($template->thumbnail);
+    if ($template->type == PAGE_TEMPLATE)
+      $page_templates[$template->tid] = $template;
+    else
+      $section_templates[$template->tid] = $template;
+  }
+
+  // Create list templates to export
+  $form['export_info'] = array(
+    '#markup' => theme('awe_export_templates', array('page_templates' => $page_templates, 'section_templates' => $section_templates))
+  );
+  drupal_add_css(drupal_get_path('module', 'awe_themer') . '/awe-themer-style.css');
+  drupal_add_js(drupal_get_path('module', 'awe_themer') . '/awe-themer-export-form.js');
+
+  $form['theme_name'] = array(
+    '#type' => 'textfield',
+    '#default_value' => variable_get('theme_default', ''),
+    '#description' => t('Machine name of theme will includes this templates. If this field empty, this field will receive machine name of default theme on this site.'),
+    '#title' => t('Theme name')
+  );
+
+  // element to contain export info
+  $form['export_data'] = array(
+    '#type' => 'hidden',
+    '#default_value' => ''
+  );
+
+  $form['export'] = array(
+    '#type' => 'markup',
+    '#markup' => '<a href="#" id="export-templates">' . t('Export') . '</a>'
+  );
+  return $form;
+}
+
+
+function awe_themer_templates_download() {
+  $export_templates = (isset($_GET['templates']) && $_GET['templates']) ? explode(',', $_GET['templates']) : array();
+  $active_theme = variable_get('theme_default', 'bartik');
+
+  if (!empty($export_templates)) {
+    // get list templates export data
+    $templates = db_select('awecontent_templates', 'tpl')
+      ->fields('tpl')
+      ->condition('tpl.tid', $export_templates, 'IN')
+      ->orderBy('tpl.created', 'DESC')
+      ->execute()
+      ->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+
+    if (!empty($templates)) {
+      // load zip library
+      if (!class_exists('Zip'))
+        require_once(drupal_get_path('module', 'awe_themer').'/zip.inc');
+      $export_file = new Zip();
+
+      // process list export templates
+      $section_templates = array();
+      $page_templates = array();
+      foreach ($templates as &$template) {
+        // create folder for template
+        $directory_title = preg_replace('/[^a-z0-9_]./', '_', strtolower($template->title));
+        $export_file->addDirectory($directory_title);
+
+        // process template cover
+        $thumbnail_names = explode('/', $template->thumbnail);
+        $file_name = end($thumbnail_names);
+        $export_file->addFile(file_get_contents($template->thumbnail), "{$directory_title}/{$file_name}");
+        $template->thumbnail = "{$directory_title}/{$file_name}";
+
+        // process template data
+        $export_file->addFile($template->data, "{$directory_title}/data.inc");
+        $template->data = "{$directory_title}/data.inc";
+
+        // check type of templates
+        if ($template->type == PAGE_TEMPLATE)
+          $page_templates[] = $template;
+        else
+          $section_templates[] = $template;
+      }
+
+      $template_file_options = array(
+        'file_name' => 'awecontent_templates.inc',
+        'function_name' => "{$active_theme}_awecontent_templates",
+        'section_templates' => $section_templates,
+        'page_templates' => $page_templates
+      );
+      $export_file->addFile(theme('templates_file', $template_file_options), 'awecontent_templates.inc');
+      $export_file->sendZip('awecontent-templates.zip');
+    }
+    else
+      drupal_goto('admin/awe-content/templates/export');
+  }
+  else
+    drupal_goto('admin/awe-content/templates/export');
+}

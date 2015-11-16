@@ -1,0 +1,249 @@
+<?php
+/**
+ * @File: awecontent_permission.module
+ * @Author: MegaDrupal
+ * Website: http://megadrupal.com/
+ */
+
+/**
+ * implements hook_menu()
+ */
+function awecontent_permission_menu() {
+	$items = array();
+
+	$items['admin/awe-content/permission'] = array(
+		'title' => t('Permission'),
+		'description' => t('Config permission for objects of AWEContent'),
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('awecontent_permission_form'),
+		'access callback' => '_awecontent_check_permission',
+		'access arguments' => array(ADMIN_PERM),
+		'weight' => 3
+	);
+
+	return $items;
+}
+
+/**
+ * callback to generate permission form
+ */
+function awecontent_permission_form($form, &$form_state) {
+  // Retrieve role names for columns.
+  $role_names = user_roles();
+
+  // Fetch permissions for all roles or the one selected role.
+  $role_permissions = awecontent_role_permission();
+
+  // Store $role_names for use when saving the data.
+  $form['role_names'] = array(
+    '#type' => 'value',
+    '#value' => $role_names,
+  );
+
+  // Get all list objects
+  $modules = awecontent_module_has_block();
+  foreach ($modules as $module) {
+    $form['permission'][] = array(
+      '#markup' => $module['name'],
+      '#id' => $module['machine_name'],
+    );
+      
+    foreach ($module['blocks'] as $perm => $perm_item) {
+      // Fill in default values for the permission.
+      $perm_item += array(
+        'description' => '',
+        'restrict access' => FALSE,
+        'warning' => !empty($perm_item['restrict access']) ? t('Warning: Give to trusted roles only; this permission has security implications.') : '',
+      );
+      $options[$perm] = '';
+      $form['permission'][$perm] = array(
+        '#type' => 'item',
+        '#markup' => $perm_item['title'],
+        // '#description' => theme('user_permission_description', array('permission_item' => $perm_item, 'hide' => $hide_descriptions)),
+      );
+      foreach ($role_names as $rid => $name) {
+        // Builds arrays for checked boxes for each role
+        if (isset($role_permissions[$rid][$perm])) {
+          $status[$rid][] = $perm;
+        }
+      }
+    }
+  }
+
+  // Have to build checkboxes here after checkbox arrays are built
+  foreach ($role_names as $rid => $name) {
+    $form['checkboxes'][$rid] = array(
+      '#type' => 'checkboxes',
+      '#options' => $options,
+      '#default_value' => isset($status[$rid]) ? $status[$rid] : array(),
+      '#attributes' => array('class' => array('rid-' . $rid)),
+    );
+    $form['role_names'][$rid] = array('#markup' => check_plain($name), '#tree' => TRUE);
+  }
+
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
+  	'#type' => 'submit', 
+  	'#value' => t('Save permissions')
+  );
+
+  $form['#attached']['js'][] = drupal_get_path('module', 'user') . '/user.permissions.js';
+
+  return $form;
+}
+
+/**
+ * implements hook_theme()
+ */
+function awecontent_permission_theme() {
+	return array(
+		'awecontent_permission_form' => array(
+			'render element' => 'form'
+		)
+	);
+}
+
+/**
+ * callback to handle submit permission form
+ */
+function awecontent_permission_form_submit(&$form, &$form_state) {
+  $permissions = array();
+  $role_names = $form_state['values']['role_names'];
+  foreach ($role_names as $rid => $role) {
+    $permissions[$rid] = $form_state['values'][$rid];
+    foreach ($permissions[$rid] as $perm_name => &$perm_val) {
+      if ($perm_val !== 0)
+        $perm_val = TRUE;
+      else
+        unset($permissions[$rid][$perm_name]);
+    }
+  }
+
+  variable_set('awecontent_permissions', $permissions);
+  drupal_set_message(t('The changes have been saved.'));
+}
+
+function theme_awecontent_permission_form($vars) {
+  $form = $vars['form'];
+
+  $roles = user_roles();
+  foreach (element_children($form['permission']) as $key) {
+    $row = array();
+    // Module name
+    if (is_numeric($key)) {
+      $row[] = array('data' => drupal_render($form['permission'][$key]), 'class' => array('module'), 'id' => 'module-' . $form['permission'][$key]['#id'], 'colspan' => count($form['role_names']['#value']) + 1);
+    }
+    else {
+      // Permission row.
+      $row[] = array(
+        'data' => drupal_render($form['permission'][$key]),
+        'class' => array('permission'),
+      );
+      foreach (element_children($form['checkboxes']) as $rid) {
+        $form['checkboxes'][$rid][$key]['#title'] = $roles[$rid] . ': ' . $form['permission'][$key]['#markup'];
+        $form['checkboxes'][$rid][$key]['#title_display'] = 'invisible';
+        $row[] = array('data' => drupal_render($form['checkboxes'][$rid][$key]), 'class' => array('checkbox'));
+      }
+    }
+    $rows[] = $row;
+  }
+  $header[] = (t('Permission'));
+  foreach (element_children($form['role_names']) as $rid) {
+    $header[] = array('data' => drupal_render($form['role_names'][$rid]), 'class' => array('checkbox'));
+  }
+  $output = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'permissions')));
+  $output .= drupal_render_children($form);
+  return $output;
+}
+
+/**
+ * callback to get user role permisson
+ */
+function awecontent_role_permission($user_roles = array()) {
+  // Get user roles
+  if (empty($user_roles))
+    $user_roles = user_roles();
+
+  // Get permission
+  $permissions = variable_get('awecontent_permissions', array());
+
+  // Prepare permission for roles
+  foreach ($user_roles as $rid => $role_name) {
+    if (!isset($permissions[$rid]))
+      $permissions[$rid] = array();
+
+    // set default permission for admin roles
+    if ($rid === 3) {
+      // Get list awecontent objects
+      $objects = awecontent_get_objects_item(TRUE);
+      foreach ($objects as $obj_name => $obj) {
+        if ($obj_name !== 'drupal_field' && $obj_name !== 'drupal_block')
+          $permissions[$rid]["awe_item_{$obj_name}"] = TRUE;
+      }
+
+      // get list blocks
+      $blocks = _block_rehash();
+      foreach ($blocks as $block)
+        $permissions[$rid]["{$block['module']}_{$block['delta']}"] = TRUE;
+    }
+
+    // Save permissions data
+    variable_set('awecontent_permissions', $permissions);
+  }
+
+  return $permissions;
+}
+
+/**
+ * Callback to get list modules which have block
+ */
+function awecontent_module_has_block() {
+  $blocks = _block_rehash();
+  $module_info = system_get_info('module');
+  $modules = array();
+
+  // get list module has block
+  foreach ($blocks as $block) {
+    if (!isset($modules[$block['module']]))
+      $modules[$block['module']] = array(
+        'name' => $module_info[$block['module']]['name'],
+        'machine_name' => $block['module'],
+        'blocks' => array()
+      );
+
+    $modules[$block['module']]['blocks']["{$block['module']}_{$block['delta']}"] = array('title' => $block['info']);
+  }
+  asort($modules);
+
+  // add awecontent object as module
+  $objects = array();
+  foreach (awecontent_get_objects_item(TRUE) as $obj_name => $object) {
+    if ($obj_name !== 'drupal_block' && $obj_name !== 'drupal_field')
+      $objects["awe_item_{$obj_name}"] = array('title' => isset($object['title']) ? $object['title'] : $obj_name);
+  }
+  $modules = array_merge(array('awe_objects' => array('machine_name' => 'awecontent_item', 'name' => t('AWEContent objects'), 'blocks' => $objects)), $modules);
+
+  return $modules;
+}
+
+/**
+ * callback to get user permission
+ */
+function awecontent_user_permissions($user_object = NULL) {
+  if (!$user_object) {
+    global $user;
+    $user_object = $user;
+  }
+
+  // get permission list
+  $awe_permissions = variable_get('awecontent_permissions', array());
+
+  // Get list permissions of user by roles
+  $user_permissions = array();
+  foreach ($user_object->roles as $rid => $role) {
+    if (isset($awe_permissions[$rid]))
+      $user_permissions = array_merge($user_permissions, $awe_permissions[$rid]);
+  }
+
+  return $user_permissions;
+}

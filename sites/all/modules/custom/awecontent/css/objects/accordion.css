@@ -1,0 +1,237 @@
+.awe-accordion.ui-widget {
+    font-family: inherit;
+}
+.awe-accordion > .group > .ui-accordion-header,
+.awe-accordion > .group > .ui-widget-header > .ui-accordion-header {
+    margin: 0;
+    padding: 0;
+    color: #000;
+    border: none;
+    border-radius: 0;
+    font-weight: normal;
+    background-image: none;
+    background-color: transparent;
+}
+.awe-accordion > .group > .ui-state-active,
+.awe-accordion > .group > .ui-widget-header > .ui-state-active {
+    margin: 0;
+    padding: 0;
+    color: #000;
+    border: none;
+    border-radius: 0;
+    font-weight: normal;
+    background-image: none;
+    background-color: transparent;
+}
+.awe-accordion > .group > .ui-accordion-content {
+    margin: 0;
+    padding: 0;
+    color: #000;
+    border: none;
+    border-radius: 0;
+    font-weight: normal;
+    background-image: none;
+    background-color: transparent;
+}
+.awe-accordion > .group > .ui-state-hover {
+    color: #000;
+    background-color: none;
+    background-color: transparent;
+}
+.awe-accordion > .group > .ui-accordion-header .ui-accordion-header-icon {
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    margin: 0;
+    padding: 0;
+    display: none;
+    position: relative;
+    background-image: none;
+}
+.ui-sortable-helper > .ui-accordion-header {
+    cursor: all-scroll;
+}
+
+/* Custom Accordion */
+
+.awe-accordion > .group {
+    margin-bottom: 2px;
+    position: relative;
+}
+.awe-accordion > .group:last-of-type {
+    margin-bottom: 0;
+}
+.awe-accordion > .group > .ui-accordion-header,
+.awe-accordion > .group > .ui-widget-header > .ui-accordion-header {
+    color: #fff;
+    font-size: 14px;
+    overflow: hidden;
+    line-height: 40px;
+    min-height: 40px;
+    padding: 0 12px 0 12px;
+    text-align: center;
+    background-color: #D4D4D4;
+    -webkit-transition: color 0.2s, background-color 0.2s;
+    -moz-transition: color 0.2s, background-color 0.2s;
+    -ms-transition: color 0.2s, background-color 0.2s;
+    -o-transition: color 0.2s, background-color 0.2s;
+    transition: color 0.2s, background-color 0.2s;
+}
+.awe-accordion > .group > .ui-accordion-header .sign-toggle-accr,
+.awe-accordion > .group > .ui-widget-header > .ui-accordion-header .sign-toggle-accr {
+    width: 20px;
+    display: none;
+    text-align: center;
+    position: absolute;
+    top: 0; right: 8px;
+}
+.awe-accordion > .group > .ui-accordion-header .sign-toggle-accr i,
+.awe-accordion > .group > .ui-widget-header > .ui-accordion-header .sign-toggle-accr i {
+    font-size: 9px;
+    color: #fff;
+}
+.awe-accordion > .group > .ui-accordion-header .icon-accr,
+.awe-accordion > .group > .ui-widget-header > .ui-accordion-header .icon-accr {
+    float: left;
+    color: #fff;
+    font-size: 14px;
+    margin: 0 3px;
+    display: none;
+    vertical-align: top;
+}
+.awe-accordion > .group > .ui-accordion-header .icon-accr i,
+.awe-accordion > .group > .ui-widget-header > .ui-accordion-header .icon-accr i {
+    color: #fff;
+    font-size: 14px;
+}
+.awe-accordion > .group > .ui-accordion-content,
+.ui-tabs .md-content-tab .ui-tabs-panel {
+    padding: 20px;
+}
+.awe-accordion > .group > .ui-accordion-header:hover,
+.awe-accordion > .group > .ui-accordion-header.ui-state-hover,
+.awe-accordion > .group > .ui-accordion-header.ui-state-active,
+.awe-accordion > .group > .ui-widget-header > .ui-accordion-header.ui-state-active,
+.awe-accordion > .ui-sortable-helper > .ui-accordion-header {
+    color: #fff;
+    text-align: center;
+    background-color: #E93C4F;
+}
+.awe-accordion > .ui-sortable-helper > .ui-accordion-header {
+    cursor: all-scroll;
+}
+.awe-accordion  > .group > .ui-accordion-header > .title-accr {
+    float: left;
+    color: inherit;
+    height: 40px;
+    display: block;
+    margin: 0 3px;
+    line-height: 40px;
+    vertical-align: top;
+}
+.awe-accordion .awe-add-accordion {
+    display: none;
+}
+.awe-accordion .awe-add-accordion > div {
+    height: 35px;
+    cursor: pointer;
+    text-align: center;
+    background: #eeeeee;
+}
+.awe-accordion .awe-add-accordion > div:hover {
+    background-color: #ddd;
+}
+.awe-accordion .awe-add-accordion i {
+    color: #fff;
+    font-size: 10px;
+    line-height: 35px;
+}
+.awe-accordion > .group > .awe-custom {
+    left: auto;
+    right: 0;
+    top: -23px;
+    background-color: #bbb;
+}
+.awe-accordion > .group:hover > .awe-custom {
+    opacity: 1;
+    visibility: visible;
+}
+.awe-accordion > .group > .custom-obj li i {
+    color: #eee;
+}
+.awe-accordion > .group > .custom-obj li:hover i {
+    color: #fff;
+}
+
+/*
+    Define style Accordion
+    Note: Add  class to postion of class "awe-accordion"
+*/
+/*++++ accor-title-center / accor-title-right / accor-icon-enable / accor-icon-right / accor-icon-center / accor-expand-icon ++++*/
+
+.awe-accordion.accor-title-center > .group > .ui-accordion-header .title-accr,
+.awe-accordion.accor-title-center > .group > .ui-widget-header .ui-state-default .title-accr {
+    margin: 0;
+    position: absolute;
+    top: 0; left: 50%;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+.awe-accordion.accor-icon-center > .group > .ui-accordion-header .icon-accr,
+.awe-accordion.accor-icon-center > .group > .ui-widget-header .ui-accordion-header .icon-accr {
+    margin: 0;
+    position: absolute;
+    top: 0; left: 50%;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+.awe-accordion.accor-title-center.accor-icon-center > .group > .ui-accordion-header .icon-accr,
+.awe-accordion.accor-title-center.accor-icon-center > .group > .ui-accordion-header .title-accr,
+.awe-accordion.accor-title-center.accor-icon-center > .group > .ui-widget-header .ui-accordion-header .icon-accr,
+.awe-accordion.accor-title-center.accor-icon-center > .group > .ui-widget-header .ui-accordion-header .title-accr {
+    float: none;
+    margin: 0 3px;
+    position: static;
+    display: inline-block;
+    -webkit-transform: translateX(0);
+    -moz-transform: translateX(0);
+    -ms-transform: translateX(0);
+    -o-transform: translateX(0);
+    transform: translateX(0);
+}
+.awe-accordion.accor-title-right > .group > .ui-accordion-header .title-accr,
+.awe-accordion.accor-title-right > .group > .ui-widget-header .ui-accordion-header .title-accr {
+    float: right;
+}
+.awe-accordion.accor-icon-right > .group > .ui-accordion-header .icon-accr,
+.awe-accordion.accor-icon-right > .group > .ui-widget-header .ui-accordion-header .icon-accr {
+    float: right;
+}
+.awe-accordion.accor-expand-icon > .group > .ui-accordion-header,
+.awe-accordion.accor-expand-icon > .group > .ui-widget-header {
+    padding-right: 30px;
+}
+.awe-accordion.accor-expand-icon > .group > .ui-accordion-header .sign-toggle-accr,
+.awe-accordion.accor-expand-icon > .group > .ui-widget-header .ui-accordion-header .sign-toggle-accr {
+    display: block;
+}
+.awe-accordion.accor-icon-right.accor-title-right > .group > .ui-accordion-header,
+.awe-accordion.accor-icon-right.accor-title-right > .group > .ui-widget-header {
+    padding-right: 12px;
+}
+.awe-accordion.accor-icon-right.accor-title-right > .group > .ui-accordion-header .sign-toggle-accr,
+.awe-accordion.accor-icon-right.accor-title-right > .group > .ui-widget-header .ui-accordion-header .sign-toggle-accr {
+    right: auto;
+    left: 7.5px;
+}
+.awe-accordion.accor-icon-enable > .group > .ui-accordion-header .icon-accr,
+.awe-accordion.accor-icon-enable > .group > .ui-widget-header > .ui-accordion-header .icon-accr {
+    display: block;
+}

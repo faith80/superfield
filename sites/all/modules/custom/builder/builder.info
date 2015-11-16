@@ -1,0 +1,7 @@
+name = Builder
+description = Entity Field builder. Create a page with drag and drop.
+core = 7.x
+package = Tabvn
+dependencies[] = ctools
+configure = admin/config/builder/permissions
+version = "7.1.6"

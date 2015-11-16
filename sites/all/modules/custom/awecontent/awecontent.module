@@ -1,0 +1,2069 @@
+<?php
+/**
+ * @File: awecontent.module
+ * @Author: MegaDrupal
+ * Website: http://megadrupal.com/
+ */
+
+define('COVER_FILE_DIR', 'public://awecontent-templates-cover');
+define('PAGE_TEMPLATE', 'page');
+define('SECTION_TEMPLATE', 'section');
+
+define('ADMIN_PERM', 'admin awecontent');
+define('USE_PERM', 'use awecontent');
+define('VIEW_ANY_TPL_PERM', 'view any awecontent templates');
+define('CREATE_TPL_PERM', 'create new awecontent template');
+define('DELETE_TPL_PERM', 'delete own awecontent templates');
+define('DELETE_ANY_TPL_PERM', 'delete any awecontent templates');
+
+@include_once(drupal_get_path('module', 'awecontent') . '/includes/awecontent.admin.inc');
+
+/**
+ * Implements hook_awecontent_objects_info().
+ */
+function awecontent_awecontent_objects_info() {
+  $path = drupal_get_path('module', 'awecontent');
+  $short_codes = array();
+
+  $short_codes['header'] = array(
+    'title' => t('Header'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-header-item.js" => array('weight' => 0),
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_header',
+    'file' => 'awecontent.shortcode.inc',
+    'file_path' => drupal_get_path('module', 'awecontent') . '/includes'
+  );
+  $short_codes['text'] = array(
+    'title' => t('Text'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-text-item.js" => array('weight' => 1)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_text',
+    'file' => 'awecontent.shortcode.inc',
+    'file_path' => drupal_get_path('module', 'awecontent') . '/includes'
+  );
+  $short_codes['message'] = array(
+    'title' => t('Message'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-message-item.js" => array('weight' => 2)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_message',
+  );
+  $short_codes['divider'] = array(
+    'title' => t('Divider'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-divider-item.js" => array('weight' => 3)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_divider',
+  );
+  $short_codes['button'] = array(
+    'title' => t('Button'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-button-item.js" => array('weight' => 4)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_button',
+  );
+  $short_codes['icon'] = array(
+    'title' => t('Icon'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-icon-item.js" => array('weight' => 5)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_icon',
+  );
+  $short_codes['image'] = array(
+    'title' => t('Image'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-image-item.js" => array('weight' => 6)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_image',
+  );
+  $short_codes['gallery'] = array(
+    'title' => t('Gallery'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-gallery-item.js" => array('weight' => 7)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_gallery',
+    'file' => 'awecontent.shortcode.inc',
+    'file_path' => drupal_get_path('module', 'awecontent') . '/includes'
+  );
+  $short_codes['slideshow'] = array(
+    'title' => t('Slideshow'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-slideshow-item.js" => array('weight' => 8)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_slideshow',
+  );
+  $short_codes['table'] = array(
+    'title' => t('Table'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-table-item.js" => array('weight' => 9)
+    ),
+    'css' => array(),
+    'callback_render' => 'awe_table',
+    'file' => 'awecontent.shortcode.inc',
+    'file_path' => drupal_get_path('module', 'awecontent') . '/includes'
+  );
+  $short_codes['accordion'] = array(
+    'title' => t('Accordion'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-accordion-item.js" => array('weight' => 10)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_accordion',
+  );
+  $short_codes['tabs'] = array(
+    'title' => t('Tabs'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-tabs-item.js" => array('weight' => 11)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_tabs',
+    'file' => 'awecontent.shortcode.inc',
+    'file_path' => drupal_get_path('module', 'awecontent') . '/includes'
+  );
+  $short_codes['flickr'] = array(
+    'title' => t('Flickr'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-flickr-item.js" => array('weight' => 12)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_flickr',
+  );
+  $short_codes['facebook'] = array(
+    'title' => t('Facebook'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-facebook-item.js" => array('weight' => 13)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_facebook',
+  );
+  $short_codes['video'] = array(
+    'title' => t('Video'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-video-item.js" => array('weight' => 15)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_video',
+    'file' => 'awecontent.shortcode.inc',
+    'file_path' => drupal_get_path('module', 'awecontent') . '/includes'
+  );
+  $short_codes['gmap'] = array(
+    'title' => t('Gmap'),
+    'js' => array(
+      'https://maps.googleapis.com/maps/api/js?v=3.exp' => array('type' => 'external'),
+      "$path/js/awecontent/plugins/awecontent-gmap-item.js" => array('weight' => 16)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_gmap',
+  );
+  $short_codes['iframe'] = array(
+    'title' => t('IFrame'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-iframe-item.js" => array('weight' => 17)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_iframe',
+  );
+  $short_codes['html'] = array(
+    'title' => t('HTML'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-html-item.js" => array('weight' => 18)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_html',
+  );
+  $short_codes['drupal_block'] = array(
+    'title' => t('Drupal Blocks'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-drupal-block-item.js" => array('weight' => 19)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_drupal_block',
+    'file' => 'awecontent.shortcode.inc',
+    'file_path' => drupal_get_path('module', 'awecontent') . '/includes'
+  );
+  $short_codes['drupal_field'] = array(
+    'title' => t('Drupal Fields'),
+    'js' => array(
+      "$path/js/awecontent/plugins/awecontent-drupal-field-item.js" => array('weight' => 20)
+    ),
+    'css' => array(),
+    'theme_callback' => 'awe_drupal_field',
+    'file' => 'awecontent.shortcode.inc',
+    'file_path' => drupal_get_path('module', 'awecontent') . '/includes'
+  );
+  return $short_codes;
+}
+
+/**
+ * Implements hook_image_default_styles().
+ */
+function awecontent_image_default_styles() {
+  return array(
+    'ac_cover_template_thumbnail' => array(
+      'label' => t('AWEContent Template Thumbnail'),
+      'effects' => array(
+        array(
+          'name' => 'image_scale_and_crop',
+          'data' => array('width' => 248, 'height' => 124, 'upscale' => 1),
+          'weight' => 0,
+        ),
+      )
+    ),
+    'ac_slide_thumb_default' => array(
+      'label' => t('Slide Thumbnail Default'),
+      'effects' => array(
+        array(
+          'name' => 'image_scale_and_crop',
+          'data' => array('width' => 150, 'height' => 75, 'upscale' => 1),
+          'weight' => 0,
+        ),
+      )
+    )
+  );
+}
+
+/**
+ * implements hook_menu()
+ */
+function awecontent_menu() {
+  $items = array();
+
+  $items['awe-content/panel'] = array(
+    'page callback' => 'ac_render_panel_ajax',
+    'access arguments' => array(USE_PERM),
+    'access callback' => '_awecontent_check_permission',
+    'file' => 'awecontent.admin.inc',
+    'file path' => drupal_get_path('module', 'awecontent') . '/includes',
+    'type' => MENU_CALLBACK
+  );
+  $items['awe-content/get-drupal-elements'] = array(
+    'page callback' => 'ac_render_drupal_element',
+    'access callback' => '_awecontent_check_permission',
+    'access arguments' => array(USE_PERM),
+    'file' => 'awecontent.admin.inc',
+    'file path' => drupal_get_path('module', 'awecontent') . '/includes',
+    'type' => MENU_CALLBACK
+  );
+
+  $items['awe-content/template-layout'] = array(
+    'page callback' => 'ac_template_layout_page',
+    'page arguments' => array(2),
+    'access callback' => '_awecontent_check_permission',
+    'access arguments' => array(USE_PERM),
+    'file' => 'awecontent.admin.inc',
+    'file path' => drupal_get_path('module', 'awecontent') . '/includes',
+    'type' => MENU_CALLBACK
+  );
+
+  $items['awe-content/template-proxy'] = array(
+    'page callback' => 'ac_templates_proxy',
+    'access callback' => '_awecontent_check_permission',
+    'access arguments' => array(USE_PERM),
+    'file' => 'html2canvasproxy.php',
+    'file path' => drupal_get_path('module', 'awecontent') . '/includes',
+    'type' => MENU_CALLBACK
+  );
+  $items['awe-content/page-templates'] = array(
+    'page callback' => 'ac_get_pages_templates',
+    'access callback' => '_awecontent_check_permission',
+    'access arguments' => array(USE_PERM),
+    'file' => 'awecontent.admin.inc',
+    'file path' => drupal_get_path('module', 'awecontent') . '/includes',
+    'type' => MENU_CALLBACK
+  );
+
+  $items['awe-content/get-image-style'] = array(
+    'page callback' => 'ac_get_image_style_url',
+    'access callback' => '_awecontent_check_permission',
+    'access arguments' => array(USE_PERM),
+    'file' => 'awecontent.admin.inc',
+    'file path' => drupal_get_path('module', 'awecontent') . '/includes',
+    'type' => MENU_CALLBACK
+  );
+  $items['awe-content/templates/actions'] = array(
+    'page callback' => 'ac_templates_do_action',
+    'page arguments' => array('2'),
+    'access callback' => '_awecontent_check_permission',
+    'access arguments' => array(USE_PERM),
+    'file' => 'awecontent.admin.inc',
+    'file path' => drupal_get_path('module', 'awecontent') . '/includes',
+    'type' => MENU_CALLBACK
+  );
+
+  $items['admin/awe-content'] = array(
+    'title' => t('AWEContent'),
+    'description' => t('Administer page, templates, import... for AWEContent'),
+    'position' => 'right',
+    'weight' => -7,
+    'page callback' => 'system_admin_menu_block_page',
+    'access callback' => '_awecontent_check_permission',
+    'access arguments' => array(USE_PERM),
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system')
+  );
+  $items['admin/awe-content/templates'] = array(
+    'title' => t('Templates'),
+    'description' => t('Contains all templates for AWEContent Builder'),
+    'page callback' => 'ac_templates_overview',
+    'access callback' => '_awecontent_check_permission',
+    'access arguments' => array(USE_PERM),
+    'file' => 'awecontent.admin.inc',
+    'file path' => drupal_get_path('module', 'awecontent') . '/includes',
+  );
+  $items['admin/awe-content/templates/page'] = array(
+    'title' => t('Page'),
+    'description' => t('Contains all page templates for AWEContent Builder'),
+    'page arguments' => array(3),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0
+  );
+  $items['admin/awe-content/templates/section'] = array(
+    'title' => t('Section'),
+    'description' => t('Contains all section templates for AWEContent Builder'),
+    'page callback' => 'ac_templates_overview',
+    'page arguments' => array(3),
+    'access callback' => '_awecontent_check_permission',
+    'access arguments' => array(USE_PERM),
+    'file' => 'awecontent.admin.inc',
+    'file path' => drupal_get_path('module', 'awecontent') . '/includes',
+    'weight' => 1,
+    'type' => MENU_LOCAL_TASK
+  );
+
+  $items['admin/awe-content/config'] = array(
+    'title' => t('Config'),
+    'description' => t('Contains configuration for AWEContent Builder. Ex: fonts, css ...'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ac_configurations_form'),
+    'access callback' => '_awecontent_check_permission',
+    'access arguments' => array(ADMIN_PERM),
+    'file' => 'awecontent.admin.inc',
+    'file path' => drupal_get_path('module', 'awecontent') . '/includes',
+    'weight' => 2
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function awecontent_permission() {
+  return array(
+    ADMIN_PERM => array(
+      'title' => t('Admin AWEContent'),
+      'description' => t('Manage all features in AWEContent module')
+    ),
+    USE_PERM => array(
+      'title' => t('Use AWEContent in node'),
+      'description' => t('Allows user can use AWEContent to build node content.')
+    ),
+    VIEW_ANY_TPL_PERM => array(
+      'title' => t('View all AWEContent templates'),
+      'description' => t('Allows user can view all templates of AWEContent and use them to build page.')
+    ),
+    CREATE_TPL_PERM => array(
+      'title' => t('Create new template for AWEContent'),
+      'description' => t('Allows user can create new template.')
+    ),
+    DELETE_TPL_PERM => array(
+      'title' => t('Delete own AWEContent templates'),
+      'description' => t('Allows user can delete AWEContent templates what is created by user.')
+    ),
+    DELETE_ANY_TPL_PERM => array(
+      'title' => t('Delete any AWEContent templates'),
+      'description' => t('Allows user can delete any AWEContent templates in this site.')
+    )
+  );
+}
+
+/**
+ * Implements hook_node_access().
+ */
+function awecontent_node_access($node, $op, $account) {
+  if (is_object($node) && $op != 'delete') {
+    $layout_node = variable_get("ac_temp_layout_{$node->type}", 0);
+    if ($layout_node && $layout_node == $node->nid) {
+      return NODE_ACCESS_ALLOW;
+    }
+  }
+}
+
+/**
+ * implements hook_theme()
+ */
+function awecontent_theme() {
+  $themes = array();
+  $path = drupal_get_path('module', 'awecontent');
+
+  $themes['ac_panel_font'] = array(
+    'template' => 'ac-panel-font',
+    'path' => "{$path}/templates/admin",
+    'file' => 'theme.inc'
+  );
+  $themes['ac_panel_icon'] = array(
+    'template' => 'ac-panel-icon',
+    'path' => "{$path}/templates/admin",
+    'file' => 'theme.inc'
+  );
+  $themes['ac_manage_templates'] = array(
+    'template' => 'ac-template-list',
+    'variables' => array(
+      'type' => SECTION_TEMPLATE,
+      'templates' => array(),
+      'load_more' => FALSE
+    ),
+    'path' => "{$path}/templates/admin",
+    'file' => 'theme.inc'
+  );
+
+  $themes['awecontent_sections'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awecontent-sections',
+    'variables' => array('sections' => NULL, 'node' => NULL),
+    'file' => 'theme.inc'
+  );
+
+  $themes['awecontent_section'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awecontent-section',
+    'variables' => array(
+      'columns' => NULL,
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+
+  $themes['awecontent_column'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awecontent-column',
+    'variables' => array(
+      'items' => NULL,
+      'settings' => NULL,
+      'classes' => NULL,
+      'hasLayout' => NULL,
+      'layout' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_button'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-button',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_facebook'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-facebook',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_gmap'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-gmap',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_header'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-header',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_icon'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-icon',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_iframe'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-iframe',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_image'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-image',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_slideshow'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-slideshow',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_message'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-message',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_text'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-text',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_html'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-html',
+    'variables' => array(
+      'settings' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_video'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-video',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_divider'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-divider',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_tabs'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-tabs',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_accordion'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-accordion',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_gallery'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-gallery',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_flickr'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-flickr',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_table'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-table',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_drupal_block'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-drupal-block',
+    'variables' => array(
+      'settings' => NULL,
+      'class_random' => NULL,
+      'node' => NULL
+    ),
+    'file' => 'theme.inc'
+  );
+  $themes['awe_drupal_field'] = array(
+    'path' => "{$path}/templates/frontend",
+    'template' => 'awe-drupal-field',
+    'variables' => array('settings' => NULL, 'node' => NULL),
+    'file' => 'theme.inc'
+  );
+  return $themes;
+}
+
+/**
+ * Implements hook_library().
+ */
+function awecontent_library() {
+  $path = drupal_get_path('module', 'awecontent');
+  $library['ac_builder'] = array(
+    'title' => t('AWEContent Builder'),
+    'version' => '1.0',
+    'js' => array(
+      "{$path}/js/awecontent/lib/jquery-migrate-1.2.1.min.js" => array('weight' => -999),
+      "{$path}/js/awecontent/lib/underscore-min.js" => array('weight' => -999),
+      "{$path}/js/awecontent/lib/backbone-min.js" => array('weight' => -998),
+      "{$path}/js/awecontent/lib/backbone-relational.js" => array('weight' => -997),
+      "{$path}/js/awecontent/lib/spectrum/spectrum.js" => array('weight' => -997),
+      "{$path}/js/awecontent/lib/magnific/magnific-popup.js" => array('weight' => -997),
+      "{$path}/js/awecontent/lib/jquery.mousewheel.js" => array('weight' => -997),
+      "{$path}/js/awecontent/lib/perfect-scrollbar.js" => array('weight' => -997),
+      "{$path}/js/awecontent/lib/html2canvas.min.js" => array('weight' => -997),
+      "{$path}/js/awecontent/awecontent-lib.js" => array('weight' => -996),
+      "{$path}/js/awecontent/awecontent.js" => array('weight' => -995),
+      "{$path}/js/awecontent/awecontent-panel.js" => array('weight' => -994),
+      "{$path}/js/awecontent/awecontent-toolbar.js" => array('weight' => -994),
+      "{$path}/js/awecontent-drupal-toolbar.js" => array('weight' => -994),
+      "{$path}/js/awecontent/awecontent-responsive-toolbar.js" => array('weight' => -994),
+      "{$path}/js/awecontent/awecontent-section-panel.js" => array('weight' => -994),
+      "{$path}/js/awecontent/awecontent-column-panel.js" => array('weight' => -994),
+      "{$path}/js/awecontent/awecontent-section.js" => array('weight' => -994),
+      "{$path}/js/awecontent/awecontent-column.js" => array('weight' => -994),
+      "{$path}/js/awecontent/awecontent-item.js" => array('weight' => -994),
+      "{$path}/js/awecontent/awecontent-dialog.js" => array('weight' => -994),
+    ),
+    'css' => array(
+      "{$path}/js/awecontent/lib/spectrum/spectrum.css" => array(),
+      "{$path}/js/awecontent/lib/magnific/magnific-popup.css" => array(),
+      "{$path}/css/ac-icon.css" => array(),
+      "{$path}/css/awecontent-drupal-panel.css" => array()
+    )
+  );
+
+  // load objects item library
+  $short_codes = awecontent_get_objects_item();
+  foreach ($short_codes as $short_code) {
+    if (isset($short_code['js']) && is_array($short_code['js']) && !empty($short_code['js'])) {
+      foreach ($short_code['js'] as $js_data => $options) {
+        if (!isset($option['frontend']) || !$option['frontend'])
+          $library['ac_builder']['js'][$js_data] = $options;
+      }
+    }
+
+    if (isset($short_code['css']) && is_array($short_code['css']) && !empty($short_code['css'])) {
+      foreach ($short_code['css'] as $css => $options) {
+        if (!isset($option['frontend']) || !$option['frontend'])
+          $library['ac_builder']['css'][$css] = $options;
+      }
+    }
+
+    if (isset($short_code['file_path']) && isset($short_code['path'])) {
+      $file = sprintf('%s/%s/%s', DRUPAL_ROOT, $short_code['file_path'], $short_code['file']);
+      if (file_exists($file)) {
+        require_once($file);
+      }
+    }
+  }
+  return $library;
+}
+
+/**
+ * implements hook_node_type_insert()
+ */
+function awecontent_node_type_insert($info) {
+  $node_templates = variable_get('awecontent_node_templates', array());
+  if (!isset($node_templates[$info->type])) {
+    $node = new stdClass();
+    $node->title = t('AWEContent Layout');
+    $node->type = $info->type;
+    $node->status = 0;
+    node_object_prepare($node);
+    $node->language = LANGUAGE_NONE;
+    node_save($node);
+    if ($node->nid > 0) {
+      $node_templates[$node->type] = $node->nid;
+      variable_set('awecontent_node_templates', $node_templates);
+    }
+  }
+}
+
+/**
+ * implements hook_node_type_update()
+ */
+function awecontent_node_type_update($info) {
+  if (!empty($info->old_type) && $info->old_type != $info->type) {
+    $node_templates = variable_get('awecontent_node_templates', array());
+    $node_templates[$info->type] = $node_templates[$info->old_type];
+    unset($node_templates[$info->old_type]);
+    variable_set('awecontent_node_templates', $node_templates);
+  }
+}
+
+/**
+ * implements hook_form_alter()
+ * @param $form
+ * @param $form_state
+ * @param $form_id
+ * @throws \Exception
+ */
+function awecontent_form_alter(&$form, &$form_state, $form_id) {
+  $active_theme_info = system_get_info('theme', variable_get('theme_default', 'bartik'));
+  if (isset($active_theme_info['ac_theme_support'])) {
+    variable_set('ac_theme_support', $active_theme_info['ac_theme_support']);
+  }
+
+  if (strpos($form_id, '_node_form') !== FALSE) {
+    $form['#prefix'] = '
+        <div id="drupal-field-panel">
+          <div class="obj-bar">
+            <div class="op-top">
+              <div class="toggle-build"><i class="ic ac-icon-arrow-left"></i></div>
+            </div>
+          </div>
+          <div class="scrollbar">
+            <div class="md-section">';
+
+    $form['#suffix'] = '</div></div></div>';
+    // set status of awecontent in node form
+    $form_state['awecontent'] = variable_get("ac_{$form['type']['#value']}_enabled", FALSE);
+
+    if ($form_state['awecontent'] && user_access('use awecontent')) {
+      $node = $form_state['node'];
+
+      $markup = sprintf(
+        '<div class="awe-control-buttons">
+            <a class="awe-actionbutton ac-active-builder-btn" href="#">%s</a>
+            <a class="awe-actionbutton ac-disable-builder-btn" href="#" style="display: none">%s</a>
+        </div>',
+        t('Build page with AWEContent'), t('Disable AWEContent')
+      );
+      $form['awe_button'] = array(
+        '#type' => 'markup',
+        '#markup' => $markup,
+        '#weight' => $form['title']["#weight"] + 0.1
+      );
+
+      drupal_add_library('system', 'jquery.once');
+      drupal_add_js('(function($) {
+        $(document).ready(function() {
+          $(document).once("test", function() {});
+        })
+      })(jQuery)', 'inline');
+
+      $form['ac_content'] = array(
+        '#type' => 'textarea',
+        '#default_value' => isset($node->ac_content) ? $node->ac_content : '',
+        '#resizable' => FALSE,
+        '#attributes' => array('style' => 'display: none')
+      );
+      $form['ac_status'] = array(
+        '#type' => 'checkbox',
+        '#default_value' => isset($node->ac_status) ? $node->ac_status : 0,
+        '#attributes' => array('style' => 'display: none')
+      );
+
+      $form['ac_configuration'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('AWEContent configuration'),
+        '#group' => 'additional_settings',
+        '#collapsible' => TRUE,
+        '#weight' => -999,
+      );
+
+      $form['actions']['view_field'] = array(
+        '#type' => 'submit',
+        '#value' => t('Save field'),
+        '#attributes' => array(
+          'data-node-type' => $node->type,
+          'style' => 'display:none'
+        )
+      );
+
+      if ($container_width = ac_get_theme_setting()) {
+        $form['ac_configuration']['ac_container_full_width'] = array(
+          '#type' => 'checkbox',
+          '#title' => t('Make container width 100% for this node'),
+          '#description' => t('If checked AWEContent will set section container width equal 100%. Else will set @containerpx.', array('@container' => $container_width)),
+          '#default_value' => isset($node->ac_container_full_width) ? $node->ac_container_full_width : variable_get("ac_{$node->type}_container_full_width", 0)
+        );
+      }
+      else {
+        $form['ac_configuration']['ac_container_full_width'] = array(
+          '#type' => 'checkbox',
+          '#default_value' => 1,
+          '#attributes' => array('style' => 'display:none')
+        );
+        $form['ac_configuration']['message'] = array(
+          '#markup' => sprintf('<p>%s<a href="%s" target="_blank">%s</a></p>', t('Your theme does not support full functions of MD AWEContent, the container width is fixed to 100%, to make it compatible with MD AWEContent, please check '), 'https://www.youtube.com/watch?v=6KSTEEgEdjI', t('tutorial here'))
+        );
+      }
+
+      $form['path_config'] = array(
+        '#type' => 'hidden',
+        '#value' => drupal_json_encode(_ac_path_configuration(_ac_get_layout_url($node->type)))
+      );
+
+      // attach libraries
+      $form['#attached']['library'][] = array('system', 'ui.core');
+      $form['#attached']['library'][] = array('system', 'ui.widget');
+      $form['#attached']['library'][] = array('system', 'ui.tabs');
+      $form['#attached']['library'][] = array('system', 'ui.sortable');
+      $form['#attached']['library'][] = array('system', 'ui.resizable');
+      $form['#attached']['library'][] = array('system', 'ui.draggable');
+      $form['#attached']['library'][] = array('system', 'ui.slider');
+      $form['#attached']['library'][] = array('awecontent', 'ac_builder');
+      $form['#attached']['js'][] = drupal_get_path('module', 'awecontent') . '/js/awecontent-node-form.js';
+      $form['#attached']['css'][] = drupal_get_path('module', 'awecontent') . '/css/awecontent-style.css';
+
+      // add icon css bundle
+      drupal_add_js(array('enable_icon' => FALSE), 'setting');
+      if (module_exists('icon') && module_exists('fontello')) {
+        $bundles = icon_bundles();
+        foreach ($bundles as $type => $bundle) {
+          if ($bundle['provider'] == 'fontello') {
+            fontello_process_attached($bundle['name']);
+          }
+        }
+        drupal_add_js(array('enable_icon' => TRUE), 'setting');
+      }
+
+      //Support Module Font awesome
+      if (module_exists('icon') && module_exists('fontawesome')) {
+        $form['#attached']['library'][] = array('fontawesome', 'fontawesome');
+        drupal_add_js(array('enable_icon' => TRUE), 'setting');
+      }
+
+      // add page wrapper element configure
+      if (!$page_wrapper = variable_get("ac_{$node->type}_page_wrapper_element", variable_get("ac_page_wrapper_element", 'body'))) {
+        $page_wrapper = 'body';
+      }
+      drupal_add_js(array('acPageWrapper' => $page_wrapper), 'setting');
+
+      // save current session form and form state
+      $_SESSION['ac-form-state'] = $form_state;
+      $_SESSION['ac-form'] = $form_state;
+
+      // check page template
+      $theme_templates = awecontent_get_theme_templates(PAGE_TEMPLATE);
+      $db_templates = _ac_load_templates(0, 10, PAGE_TEMPLATE);
+      $page_templates = array_merge($theme_templates, $db_templates['templates']);
+      if (count($page_templates))
+        drupal_add_js(array('ac_has_page_template' => TRUE), 'setting');
+      else
+        drupal_add_js(array('ac_has_page_template' => FALSE), 'setting');
+    }
+  }
+}
+
+/**
+ * Implements hook_node_submit().
+ */
+function awecontent_node_submit($node, $form, &$form_state) {
+  if ($form_state['awecontent']) {
+    $layout_nid = variable_get("ac_temp_layout_{$node->type}", 0);
+    if (strpos(current_path(), '/edit') === FALSE || ($layout_nid && $layout_nid == $node->nid)) {
+      $node_layout = node_load(variable_get("ac_temp_layout_{$node->type}", 0));
+      $node->nid = $node_layout->nid;
+      $node->vid = $node_layout->vid;
+    }
+
+    $node->ac_status = isset($form_state['values']['ac_status']) ? $form_state['values']['ac_status'] : 0;
+    $node->ac_content = isset($form_state['values']['ac_content']) ? $form_state['values']['ac_content'] : '';
+    $node->ac_container_full_width = isset($form_state['values']['ac_container_full_width']) ? $form_state['values']['ac_container_full_width'] : variable_get("ac_{$node->type}_container_full_width", 1);
+    drupal_clear_css_cache();
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function awecontent_node_update($node) {
+  $layout_nid = variable_get("ac_temp_layout_{$node->type}", 0);
+  if (strpos(current_path(), '/edit') === FALSE || ($layout_nid && $layout_nid == $node->nid)) {
+    db_update('node')
+      ->fields(array('created' => $node->changed))
+      ->execute();
+    variable_del("ac_temp_layout_{$node->type}");
+    $node->created = $node->changed;
+
+    // save node need change status message
+    $reset_msg_nodes = variable_get('awe_reset_msg_nodes', array());
+    $reset_msg_nodes[] = $node->nid;
+    variable_set('awe_reset_msg_nodes', $reset_msg_nodes);
+
+    // reset node promote status
+    $reset_promote_nodes = variable_get('awe_reset_promote_nodes', array());
+    if (($index = array_search($node->nid, $reset_promote_nodes)) !== FALSE) {
+      $node->promote = 1;
+      unset($reset_promote_nodes[$index]);
+      variable_set('awe_reset_promote_nodes', $reset_promote_nodes);
+    }
+  }
+
+  if (isset($node->ac_status) && isset($node->ac_content)) {
+    $fields = array(
+      'status' => isset($node->ac_status) ? $node->ac_status : 0,
+      'nid' => $node->nid,
+      'container_full_width' => isset($node->ac_container_full_width) ? $node->ac_container_full_width : variable_get("ac_{$node->type}_container_full_width", 0),
+      'build_data' => isset($node->ac_content) ? $node->ac_content : ''
+    );
+
+    // Get awecontent data of node in database
+    $ac_node = db_select('awecontent_nodes', 'ac_node')
+      ->fields('ac_node')
+      ->condition('nid', $node->nid)
+      ->execute()
+      ->fetchAssoc();
+
+    if (!$ac_node) {
+      db_insert('awecontent_nodes')
+        ->fields($fields)
+        ->execute();
+    }
+    else {
+      db_update('awecontent_nodes')
+        ->fields($fields)
+        ->condition('nid', $node->nid)
+        ->execute();
+    }
+  }
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function awecontent_node_insert($node) {
+  if (isset($node->ac_status) && isset($node->ac_content)) {
+    $fields = array(
+      'status' => $node->ac_status,
+      'nid' => $node->nid,
+      'container_full_width' => $node->ac_container_full_width,
+      'build_data' => $node->ac_content
+    );
+
+    db_insert('awecontent_nodes')
+      ->fields($fields)
+      ->execute();
+  }
+}
+
+/**
+ * Implements hook_node_delete().
+ */
+function awecontent_node_delete($node) {
+  $layout_node = variable_get("ac_temp_layout_{$node->type}", 0);
+  if ($node->nid && $node->nid == $layout_node) {
+    variable_del("ac_temp_layout_{$node->type}");
+  }
+}
+
+/**
+ * Implements hook_node_load().
+ */
+function awecontent_node_load($nodes, $types) {
+  foreach ($nodes as &$node) {
+    $node->ac_content = '';
+    $node->ac_status = 0;
+
+    $ac_node = ac_get_node($node->nid);
+
+    if ($ac_node) {
+      $node->ac_content = $ac_node['build_data'];
+      $node->ac_status = $ac_node['status'];
+      $node->ac_container_full_width = $ac_node['container_full_width'];
+    }
+  }
+}
+
+/**
+ * Callback to load libraries which is used in layout page
+ */
+function ac_layout_libraries_load($node_type = '') {
+  // Add js and css
+  $path = drupal_get_path('module', 'awecontent');
+
+  // check include bootstrap library
+  $include_boostrap = $node_type ? variable_get("ac_{$node_type}_include_bootstrap", variable_get("ac_include_bootstrap", 1)) : variable_get("ac_include_bootstrap", 1);
+  if ($include_boostrap) {
+    drupal_add_css("{$path}/css/bootstrap.css");
+  }
+
+  // load css style of page build
+  drupal_add_css("{$path}/js/awecontent/lib/hallo/css/hallo.css");
+  drupal_add_css("{$path}/js/awecontent/lib/hallo/css/image.css");
+  drupal_add_css("{$path}/js/awecontent/lib/hallo/css/fontawesome/css/font-awesome.css");
+  drupal_add_css("{$path}/js/awecontent/lib/spectrum/spectrum.css");
+  drupal_add_css("{$path}/js/awecontent/lib/owl.carousel/owl.carousel.css");
+  drupal_add_css("{$path}/js/awecontent/lib/owl.carousel/owl.theme.css");
+  drupal_add_css("{$path}/js/awecontent/lib/owl.carousel/owl.transitions.css");
+  drupal_add_css("{$path}/css/ac-icon.css");
+  drupal_add_css("{$path}/css/awecontent-layout.css");
+  drupal_add_css("{$path}/css/awe-layout-admin.css");
+  drupal_add_css("{$path}/css/awe-animate.css");
+  drupal_add_css("{$path}/css/objects/accordion.css");
+  drupal_add_css("{$path}/css/objects/image.css");
+  drupal_add_css("{$path}/css/objects/gallery.css");
+  drupal_add_css("{$path}/css/objects/slideshow.css");
+  drupal_add_css("{$path}/css/objects/button.css");
+  drupal_add_css("{$path}/css/objects/divider.css");
+  drupal_add_css("{$path}/css/objects/flickr.css");
+  drupal_add_css("{$path}/css/objects/icon.css");
+  drupal_add_css("{$path}/css/objects/table.css");
+  drupal_add_css("{$path}/css/objects/tabs.css");
+  drupal_add_css("{$path}/js/awecontent/lib/magnific/magnific-popup.css");
+  drupal_add_css("{$path}/css/new-custom.css");
+
+  // load font icon css
+  if (module_exists('icon') && module_exists('fontello')) {
+    $bundles = icon_bundles();
+    foreach ($bundles as $type => $bundle) {
+      if ($bundle['provider'] == 'fontello') {
+        fontello_process_attached($bundle['name']);
+      }
+    }
+  }
+
+  // add google font if use
+  $google_font = variable_get('ac_google_font', '');
+  if ($node_type && variable_get("ac_{$node_type}_google_font", ''))
+    $google_font = variable_get("ac_{$node_type}_google_font");
+
+  $unload_google_font = $node_type ? variable_get("ac_{$node_type}_unload_google_fonts", variable_get('ac_unload_google_fonts', 0)) : variable_get('ac_unload_google_fonts', 0);
+  if ($google_font && !$unload_google_font) {
+    drupal_add_css($google_font);
+  }
+
+  // load libraries
+  drupal_add_library('system', 'ui.core');
+  drupal_add_library('system', 'ui.widget');
+  drupal_add_library('system', 'ui.tabs');
+  drupal_add_library('system', 'ui.sortable');
+  drupal_add_library('system', 'ui.resizable');
+  drupal_add_library('system', 'ui.draggable');
+  drupal_add_library('system', 'ui.accordion');
+
+  // load js
+  drupal_add_js($path . '/js/awecontent/lib/jquery.parallax-1.1.3.js', array('weight' => -999));
+  drupal_add_js($path . '/js/awecontent/lib/owl.carousel/owl.carousel.js', array('weight' => -999));
+  drupal_add_js($path . '/js/awecontent/lib/hallo/rangy-core.js', array('weight' => -998));
+  drupal_add_js($path . '/js/awecontent/lib/hallo/hallo.js', array('weight' => -997));
+  drupal_add_js($path . '/js/awecontent-node-build.js', array('weight' => -96));
+
+  // load objects item library
+  awecontent_objects_libraries_load();
+}
+
+
+/**
+ * Implements hook_preprocess().
+ */
+function awecontent_preprocess_block(&$vars) {
+  $block = $vars['elements']['#block'];
+  if (isset($block->awe_settings)) {
+    $settings = $block->awe_settings;
+    $node = $block->awe_node;
+    $nid = $node->nid;
+    if ($settings['customTitle'] != '') {
+      $vars['elements']['#block']->subject = $settings['customTitle'];
+      $vars['elements']['#block']->title = $settings['customTitle'];;
+    }
+    $block_id = $settings['customID'] != '' ? $settings['customID'] : $vars['block_html_id'];
+    $block_class = 'block-' . $nid . '-' . $block->module . '-' . $block->delta;
+    $block_class = $settings['customClass'] != '' ? $settings['customClass'] : $block_class;
+    $vars['block_html_id'] = $block_id;
+    $box_model = $settings['boxModelSettings'];
+    $box_model = _ac_render_item_box_model_settings($box_model);
+    $style = render_css('.' . $block_class, array($box_model));
+    $vars['classes_array'] = array_merge(array($block_class), $vars['classes_array']);
+    $vars['attributes_array']['data-animation'] = $settings['animationData'];
+    drupal_add_css($style, array('type' => 'inline', 'group' => CSS_THEME));
+  }
+}
+
+/**
+ * implements hook_node_type_form_alter()
+ * @param $form
+ * @param $form_state
+ */
+function awecontent_form_node_type_form_alter(&$form, &$form_state, $form_id) {
+  $form['ac_configuration'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('AWEContent configuration'),
+    '#group' => 'additional_settings',
+    '#collapsible' => TRUE,
+    '#weight' => -999,
+  );
+
+  $form['ac_configuration']['enabled_awecontent'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable MD AWEContent'),
+    '#default_value' => variable_get("ac_{$form['type']['#default_value']}_enabled", 0),
+  );
+
+  $form['ac_configuration']['ac_page_wrapper_element'] = array(
+    '#type' => 'textfield',
+    '#size' => 40,
+    '#title' => t('Page wrapper element'),
+    '#description' => t('ID of class of page wrapper element which contains all content of page. Ex: #page-wrapper or .page-wrapper ...'),
+    '#default_value' => variable_get("ac_{$form['type']['#default_value']}_page_wrapper_element", variable_get('ac_page_wrapper_element', 'body')),
+    '#prefix' => '<div class="awe-configurations">'
+  );
+
+  if ($container_width = ac_get_theme_setting()) {
+    $form['ac_configuration']['ac_container_full_width'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Make container width 100% for this content type'),
+      '#description' => t('If checked AWEContent will set section container width equal 100%. Else will set container width equal @containerpx.', array('@container' => $container_width)),
+      '#default_value' => variable_get("ac_{$form['type']['#default_value']}_container_full_width", 0)
+    );
+  }
+  else {
+    $form['ac_configuration']['ac_container_full_width'] = array(
+      '#type' => 'checkbox',
+      '#default_value' => 1,
+      '#attributes' => array('style' => 'display:none')
+    );
+    $form['ac_configuration']['message'] = array(
+      '#markup' => sprintf('<p id="ac-configuration-message">%s</p>', t('Your theme does not support full functions of MD AWEContent, the container width is fixed to 100%, to make it compatible with MD AWEContent, please check tutorial here'))
+    );
+  }
+
+  $form['ac_configuration']['ac_include_bootstrap'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Include Bootstrap CSS'),
+    '#description' => t('Uncheck this option if your theme is includes Bootstrap CSS Library.'),
+    '#default_value' => variable_get("ac_{$form['type']['#default_value']}_include_bootstrap", variable_get('ac_include_bootstrap', 1))
+  );
+  $form['ac_configuration']['font'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Google Web Fonts'),
+    '#weight' => 5,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    '#suffix' => '</div>'
+  );
+  $form['ac_configuration']['font']['font_description'] = array(
+    '#type' => 'markup',
+    '#markup' => '<ul class="steps">
+      <li>Go to <a href="http://www.google.com/webfonts" target="_blank">www.google.com/webfonts</a>, choose your fonts and add to collection</li>
+      <li>Click "Use" in the bottom bar after choose fonts</li>
+      <li>Find "Add this code to your website", copy from <strong>http://</strong> to the nearest <strong>\'</strong> and paste it below to activate.</li>
+      </ul>',
+  );
+  $form['ac_configuration']['font']['ac_google_font'] = array(
+    '#type' => 'textarea',
+    '#title' => t('@import'),
+    '#default_value' => variable_get("ac_{$form['type']['#default_value']}_google_font", variable_get('ac_google_font', '')),
+    '#description' => "For example: &lt;link href='http://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'&gt;",
+    '#resizable' => FALSE,
+    '#rows' => 2
+  );
+  $form['ac_configuration']['font']['ac_unload_google_fonts'] = array(
+    '#type' => 'checkbox',
+    '#title' => t("Don't add fonts to my site, I include it in theme."),
+    '#default_value' => variable_get("ac_{$form['type']['#default_value']}_unload_google_fonts", variable_get('ac_unload_google_fonts', 0)),
+  );
+
+  $js = '(function($) {
+    $(document).ready(function() {
+      $("#edit-enabled-awecontent").change(function() {
+        if ($(this).is(":checked")) {
+          $(".awe-configurations").show();
+
+          if ($("p#ac-configuration-message").length) {
+            $("p#ac-configuration-message").show()
+            $(".form-item-ac-container-full-width").hide();
+          }
+        }
+        else {
+          $(".awe-configurations").hide()
+        }
+      }).trigger("change");
+    })
+  })(jQuery);';
+  drupal_add_js($js, 'inline');
+
+  $form['#submit'][] = 'ac_node_type_form_submit';
+  $form['#attached']['css'][] = array(
+    'data' => '.awe-configurations {margin-left: 5px; border-left: 2px solid #0075BF; padding-left: 20px} #edit-ac-page-wrapper-element, #edit-google-font {width: 50%, min-width: 200px}',
+    'type' => 'inline'
+  );
+}
+
+/**
+ * Callback to handle node_type_form submit
+ * @param $form
+ * @param $form_state
+ */
+function ac_node_type_form_submit($form, &$form_state) {
+  variable_set("ac_{$form['type']['#default_value']}_container_full_width", $form_state['values']['ac_container_full_width']);
+  variable_set("ac_{$form['type']['#default_value']}_enabled", $form_state['values']['enabled_awecontent']);
+  variable_set("ac_{$form['type']['#default_value']}_include_bootstrap", $form_state['values']['ac_include_bootstrap']);
+  variable_set("ac_{$form['type']['#default_value']}_google_font", $form_state['values']['ac_google_font']);
+  variable_set("ac_{$form['type']['#default_value']}_unload_google_fonts", $form_state['values']['ac_unload_google_fonts']);
+  variable_set("ac_{$form['type']['#default_value']}_page_wrapper_element", $form_state['values']['ac_page_wrapper_element']);
+}
+
+/**
+ * Callback to get page templates data
+ * @param $start
+ * @return array
+ */
+function _ac_get_templates($start = 0) {
+  $load_more = FALSE;
+  $templates = db_select('awecontent_templates', 'act')
+    ->fields('act')
+    ->condition('type', PAGE_TEMPLATE)
+    ->range($start, 13)
+    ->orderBy('created', 'DESC')
+    ->execute()
+    ->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+
+  if (count($templates) == 13) {
+    $load_more = TRUE;
+    array_pop($templates);
+  }
+
+  foreach ($templates as &$template) {
+    $template->cover_file = file_create_url($template->cover_file);
+    $template->template_data = drupal_json_decode(drupal_json_decode($template->template_data));
+  }
+
+  return array('load_more' => $load_more, 'templates' => $templates);
+}
+
+/**
+ * Callback to get awecontent setting in active theme
+ */
+function ac_get_theme_setting() {
+  $container_width = 0;
+
+  $active_theme = variable_get('theme_default', 'bartik');
+  $active_theme_info = system_get_info('theme', $active_theme);
+
+  if (isset($active_theme_info['awecontent']) && $active_theme_info['awecontent']) {
+    $container_width = (isset($active_theme_info['container_width']) && $active_theme_info['container_width']) ? $active_theme_info['container_width'] : 1170;
+  }
+
+  return $container_width;
+}
+
+/**
+ * Callback to get AWEContent node in database
+ */
+function ac_get_node($nid) {
+  // Query awecontent data of node in database
+  $ac_node = db_select('awecontent_nodes', 'ac_node')
+    ->fields('ac_node')
+    ->condition('nid', $nid)
+    ->execute()
+    ->fetchAssoc();
+
+  return $ac_node;
+}
+
+/**
+ * Implements hook_library_alter().
+ */
+function awecontent_library_alter(&$libraries, $module) {
+  $path = drupal_get_path('module', 'awecontent');
+  $add_node_condition = strpos(current_path(), 'node/add') !== FALSE;
+  if ($add_node_condition) {
+    $parsed_url = explode('/', current_path());
+    $node_type = end($parsed_url);
+    $add_node_condition = variable_get("ac_{$node_type}_enabled", FALSE);
+  }
+  $edit_node_condition = (arg(0) == 'node' && is_numeric(arg(1)) && arg(2) == 'edit');
+  if ($edit_node_condition) {
+    $node = node_load(arg(1));
+    if ($node) 
+      $edit_node_condition = variable_get("ac_{$node->type}_enabled", FALSE);
+  }
+  $view_layout_mode = (isset($_GET['ac_layout']) && $_GET['ac_layout']);
+  $template_page = strpos(current_path(), 'awe-content/template-layout') !== FALSE || strpos(current_path(), 'awe-content/templates') !== FALSE;
+
+
+  if ($add_node_condition || $edit_node_condition || $view_layout_mode || $template_page) {
+    if ($module == 'system') {
+      $libraries['jquery']['version'] = '1.10.2';
+      $libraries['jquery']['js'] = array(
+        'misc/jquery.js' => array(
+          'group' => -100,
+          'weight' => -20,
+          'data' => "{$path}/js/awecontent/lib/jquery/jquery.min.js"
+        ),
+        'misc/jquery-migrate.js' => array(
+          'group' => -100,
+          'weight' => -19,
+          'data' => "{$path}/js/awecontent/lib/jquery-migrate-1.2.1.min.js",
+        )
+      );
+
+      // replace jquery ui
+      foreach ($libraries as $name => &$library) {
+        if (strpos($name, 'ui.') !== FALSE || strpos($name, 'effects') !== FALSE)
+          $library['js'] = array();
+      }
+      $ui_path = "{$path}/js/awecontent/lib/jquery-ui.min.js";
+      $libraries['ui']['js'] = array(
+        $ui_path => array(
+          'group' => -100,
+          'weight' => -1,
+          'data' => $ui_path
+        )
+      );
+      $libraries['ui']['version'] = '1.10.2';
+      $libraries['jquery.form']['js']['misc/jquery.form.js'] = array('data' =>  "{$path}/js/awecontent/lib/jquery.form.min.js");
+    }
+  }
+}
+
+/**
+ * Callback to generate path configuration
+ */
+function _ac_path_configuration($layout_url) {
+  $path = drupal_get_path('module', 'awecontent');
+  $path_config = array(
+    'fileUploadURL' => url('md-media/upload', array('absolute' => TRUE)),
+    'templateActionURL' => url('awe-content/templates/actions', array('absolute' => TRUE)),
+    'pageTemplatesUrl' => url('awe-content/page-templates', array('absolute' => TRUE)),
+    'uploadTemplate' => url('awe-content/templates/actions', array('absolute' => TRUE)),
+    'buildPanel' => sprintf('%s?q=awe-content/panel', base_path()),
+    'templateProxy' => url('awe-content/template-proxy', array('absolute' => TRUE)),
+    'twitterAPI' => url('awe-content/twitter', array('absolute' => TRUE)),
+    'drupalElementURL' => url('awe-content/get-drupal-elements', array('absolute' => TRUE)),
+    'imageStyleURL' => url('awe-content/get-image-style', array('absolute' => TRUE)),
+    'libraryURL' => url('md-media/library', array('absolute' => TRUE)),
+    'myFileURL' => url('md-media/my-files', array('absolute' => TRUE)),
+    'defaultImage' => url("{$path}/images/blank.jpg", array('absolute' => TRUE)),
+    'libraries' => array(
+      'video' => array(
+        'css' => array(),
+        'js' => array(
+          file_create_url($path . '/js/awecontent/lib/froogaloop.min.js', array('absolute' => TRUE)),
+          file_create_url('https://www.youtube.com/iframe_api', array('external' => TRUE))
+        )
+      ),
+      'googleMap' => array(
+        'css' => array(),
+        'js' => array('https://maps.googleapis.com/maps/api/js?v=3.exp')
+      ),
+      'magnific' => array(
+        'css' => array(file_create_url($path . '/css/magnific-popup.css', array('absolute' => TRUE))),
+        'js' => array(file_create_url($path . '/js/awecontent/lib/magnific-popup.js', array('absolute' => TRUE))),
+      ),
+      'owlCarousel' => array(
+        'css' => array(
+          file_create_url($path . '/js/awecontent/lib/owl.carousel/owl.carousel.css', array('absolute' => TRUE)),
+          file_create_url($path . '/js/awecontent/lib/owl.carousel/owl.carousel.css', array('absolute' => TRUE)),
+          file_create_url($path . '/js/awecontent/lib/owl.carousel/owl.carousel.css', array('absolute' => TRUE)),
+          file_create_url($path . '/js/awecontent/lib/owl.carousel/owl.carousel.css', array('absolute' => TRUE)),
+        ),
+        'js' => array(
+          file_create_url($path . '/js/awecontent/lib/owl.carousel/owl.carousel.js', array('absolute' => TRUE)),
+        )
+      ),
+      'aceEditor' => array(
+        'css' => array(),
+        'js' => array(
+          file_create_url($path . '/js/awecontent/lib/ace-editor/ace.js', array('absolute' => TRUE)),
+          file_create_url($path . '/js/awecontent/lib/ace-editor/mode-html.js', array('absolute' => TRUE)),
+          file_create_url($path . '/js/awecontent/lib/ace-editor/theme-twilight.js', array('absolute' => TRUE)),
+          file_create_url($path . '/js/awecontent/lib/ace-editor/worker-html.js', array('absolute' => TRUE))
+        )
+      )
+    )
+  );
+
+  return array_merge($path_config, array('layoutURL' => $layout_url));
+}
+
+/**
+ * Callback to get layout url
+ */
+function _ac_get_layout_url() {
+  $url = url('awe-content/template-layout', array('absolute' => TRUE));
+
+  if (arg(0) == 'node' && arg(2) != '') {
+    if (is_numeric(arg(1)) && arg(2) == 'edit') {
+      $url = url("node/" . arg(1), array(
+        'absolute' => TRUE,
+        'query' => array('ac_layout' => 1, 'build_node' => arg(1))
+      ));
+    }
+    else {
+      if (arg(1) == 'add') {
+        $node_type = arg(2);
+        $layout_nid = variable_get("ac_temp_layout_{$node_type}", 0);
+        if (!$layout_nid || !node_load($layout_nid)) {
+          // create new node for builder
+          $node = new stdClass();
+          $node->title = t('Title');
+          $node->type = $node_type;
+          node_object_prepare($node);
+
+          // save promote status before reset it
+          $reset_promote = $node->promote;
+
+          // set promote off and node to unpublished
+          $node->promote = 0;
+          $node->status = 0;
+          node_save($node);
+
+          // add node to list node need reset promote status
+          if ($reset_promote) {
+            $reset_promote_nodes = variable_get('reset_promote_nodes', array());
+            $reset_promote_nodes[] = $node->nid;
+            variable_set('reset_promote_nodes', $reset_promote_nodes);
+          }
+
+          // assign layout_nid by node id
+          $layout_nid = $node->nid;
+          variable_set("ac_temp_layout_{$node_type}", $layout_nid);
+        }
+
+        // create layout url for builder
+        $url = url("node/{$layout_nid}", array(
+          'absolute' => TRUE,
+          'query' => array('ac_layout' => 1, 'build_node' => -1)
+        ));
+      }
+    }
+  }
+
+  return $url;
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function awecontent_node_view($node, $view_mode, $langcode) {
+  $module_path = drupal_get_path('module', 'awecontent');
+  if (isset($_GET['ac_layout']) && $_GET['ac_layout'] == 1) {
+    $node->content = array(
+      'builder' => array(
+        '#markup' => sprintf(
+          '<div id="awe-section-wrapper" class="awe-colper"></div>
+          <div class="add-section">
+            <a href="#" class="awe-actionbutton new-section">%s</a>
+            <a href="#" class="awe-actionbutton save-page-template">%s</a>
+          </div>',
+          t('Add new section'),
+          t('Save page as template')
+        )
+      ),
+      '#entity_type' => $node->content['#entity_type'],
+      '#bundle' => $node->content['#bundle'],
+    );
+
+    // load libraries is used in page build
+    ac_layout_libraries_load($node->type);
+  }
+  elseif (isset($node->ac_status) && $node->ac_status && $view_mode == 'full' && !isset($_GET['ac_layout'])) {
+    if (variable_get("ac_{$node->type}_include_bootstrap", variable_get('ac_include_bootstrap', 1)) == 1) {
+      drupal_add_css($module_path . '/css/bootstrap.css');
+    }
+    drupal_add_css($module_path . '/css/awecontent-layout.css');
+    drupal_add_css($module_path . '/css/awe-animate.css');
+    drupal_add_css($module_path . '/css/new-custom.css');
+    drupal_add_css($module_path . '/js/awecontent/lib/magnific/magnific-popup.css');
+    drupal_add_css($module_path . '/js/awecontent/lib/owl.carousel/owl.carousel.css');
+    drupal_add_css($module_path . '/js/awecontent/lib/owl.carousel/owl.theme.css');
+    drupal_add_css($module_path . '/js/awecontent/lib/owl.carousel/owl.transitions.css');
+
+    drupal_add_css($module_path . '/css/objects/accordion.css');
+    drupal_add_css($module_path . '/css/objects/image.css');
+    drupal_add_css($module_path . '/css/objects/gallery.css');
+    drupal_add_css($module_path . '/css/objects/slideshow.css');
+    drupal_add_css($module_path . '/css/objects/button.css');
+    drupal_add_css($module_path . '/css/objects/divider.css');
+    drupal_add_css($module_path . '/css/objects/flickr.css');
+    drupal_add_css($module_path . '/css/ac-icon.css');
+    drupal_add_css($module_path . '/css/objects/icon.css');
+    drupal_add_css($module_path . '/css/objects/table.css');
+    drupal_add_css($module_path . '/css/objects/tabs.css');
+    if (module_exists('icon') && module_exists('fontello')) {
+      $bundles = icon_bundles();
+      foreach ($bundles as $type => $bundle) {
+        if ($bundle['provider'] == 'fontello') {
+          fontello_process_attached($bundle['name']);
+        }
+      }
+    }
+
+    $google_font = variable_get('ac_google_font', '');
+    if (variable_get("ac_{$node->type}_google_font", ''))
+      $google_font = variable_get("ac_{$node->type}_google_font");
+    $unload_google_font = variable_get("ac_{$node->type}_unload_google_fonts", variable_get('ac_unload_google_fonts', 0));
+    if ($google_font && !$unload_google_font) {
+      drupal_add_css($google_font);
+    }
+
+    drupal_add_library('system', 'ui.tabs');
+    drupal_add_library('system', 'ui.accordion');
+    drupal_add_js(drupal_get_path('module', 'awecontent') . '/js/awecontent/lib/froogaloop.min.js');
+    drupal_add_js(drupal_get_path('module', 'awecontent') . '/js/awecontent/lib/magnific/magnific-popup.js');
+    drupal_add_js(drupal_get_path('module', 'awecontent') . '/js/awecontent/lib/jquery.parallax-fontend.js');
+    drupal_add_js('https://www.youtube.com/iframe_api', 'external');
+    drupal_add_js('https://maps.googleapis.com/maps/api/js?v=3.exp');
+    drupal_add_js($module_path . '/js/awecontent/lib/owl.carousel/owl.carousel.js');
+    drupal_add_js($module_path . '/js/awe-frontend-scripts.js');
+
+    // load frontend libraries of objects
+    awecontent_objects_libraries_load();
+
+    $content = array('#entity_type' => $node->content['#entity_type']);
+    $content['links'] = $node->content['links'];
+    $ac_content = $node->ac_content;
+    $ac_data = drupal_json_decode($ac_content);
+    $ac_data = _awe_preprocess_data($ac_data, $node);
+    $content['awe_content'] = $ac_data;
+    $content['#entity_type'] = $node->content['#entity_type'];
+    $content['#bundle'] = $node->content['#bundle'];
+    $node->content = $content;
+  }
+}
+
+/**
+ * Implements hook_preprocess_page
+ * Add new variable $is_awcontent
+ * Check if page have content use awecontent module
+ * @param $vars
+ */
+function awecontent_preprocess_page(&$vars) {
+  // process for node page
+  if (isset($vars['node'])) {
+    $node = $vars['node'];
+
+    // check to replace message
+    $reset_msg_nodes = variable_get('awe_reset_msg_nodes', array());
+    if (arg(2) != 'edit' && ($index = array_search($node->nid, $reset_msg_nodes)) !== FALSE) {
+      $messages = drupal_get_messages('status');
+      if (isset($messages['status'])) {
+        foreach ($messages['status'] as $message) {
+          if (strpos($message, 'has been updated') !== FALSE) {
+            $message = str_replace('updated', 'created', $message);
+          }
+          drupal_set_message($message);
+        }
+      }
+
+      // remove nid from
+      unset($reset_msg_nodes[$index]);
+      variable_set('awe_reset_msg_nodes', $reset_msg_nodes);
+    }
+
+    if ($node->ac_status == 1 || (isset($_GET['ac_layout']) && $_GET['ac_layout'])) {
+      $vars['awecontent'] = TRUE;
+
+      // Add theme suggestion to support separation template for page what is created by AWEContent Builder
+      $theme_suggestions = array('page__ac');
+      foreach ($vars['theme_hook_suggestions'] as $theme_suggestion) {
+        $theme_suggestions[] = $theme_suggestion;
+        $theme_suggestions[] = str_replace('page__', 'page__ac__', $theme_suggestion);
+      }
+      $vars['theme_hook_suggestions'] = $theme_suggestions;
+
+      if (isset($_GET['ac_layout']) && isset($_GET['build_node']) && $_GET['build_node'] == -1) {
+        drupal_set_title(t('Title'));
+      }
+
+      // render css container width
+      if ($container_width = ac_get_theme_setting()) {
+        $css = sprintf('@media (min-width: 1200px) {.awe-section .container {width: %spx;}}', "{$container_width}");
+        drupal_add_css($css, 'inline');
+      }
+    }
+  }
+  elseif (strpos(current_path(), 'awe-content/template-layout') !== FALSE) {
+    $vars['awecontent'] = TRUE;
+
+    $theme_suggestions = array('page__ac');
+    foreach ($vars['theme_hook_suggestions'] as $theme_suggestion) {
+      $theme_suggestions[] = $theme_suggestion;
+      $theme_suggestions[] = str_replace('page__', 'page__ac__', $theme_suggestion);
+    }
+    $vars['theme_hook_suggestions'] = $theme_suggestions;
+  }
+  elseif (arg(1) == 'awe-content' && arg(2) == 'templates') {
+    if (module_exists('icon') && module_exists('fontello')) {
+      $bundles = icon_bundles();
+      foreach ($bundles as $type => $bundle) {
+        if ($bundle['provider'] == 'fontello') {
+          fontello_process_attached($bundle['name']);
+        }
+      }
+    }
+  }
+  elseif (strpos(current_path(), 'node/add') !== FALSE || (arg(0) == 'node' && arg(2) == 'edit')) {
+    
+  }
+}
+
+/**
+ * implements hook_preprocess_html()
+ * @param $vars
+ */
+function awecontent_preprocess_html(&$vars) {
+  if (arg(0) == 'node' && is_numeric(arg(1))) {
+    $ac_node = ac_get_node(arg(1));
+    if (($ac_node && $ac_node['status']) || (isset($_GET['ac_layout']) && $_GET['ac_layout'])) {
+      $vars['awecontent'] = TRUE;
+
+      // Add theme suggestion to support separation template for page what is created by AWEContent Builder
+      $theme_suggestions = array('html__ac');
+      foreach ($vars['theme_hook_suggestions'] as $theme_suggestion) {
+        $theme_suggestions[] = $theme_suggestion;
+        $theme_suggestions[] = str_replace('html__', 'html__ac__', $theme_suggestion);
+      }
+
+      $vars['theme_hook_suggestions'] = $theme_suggestions;
+
+      // Add class to body
+      $vars['classes_array'][] = 'awecontent-layout';
+      if ($ac_node['container_full_width'] && !isset($_GET['ac_layout'])) {
+        $vars['classes_array'][] = 'awe-section-100';
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function awecontent_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'library_alter') {
+    $group = $implementations['awecontent'];
+    unset($implementations['awecontent']);
+    $implementations['awecontent'] = $group;
+  }
+}
+
+/**
+ * Implements hook_awecontent_block_support().
+ */
+function awecontent_awecontent_block_support($delta = '', $module = '') {
+  $output = array();
+
+  // process by module name
+  switch ($module) {
+    case 'md_slider':
+      $output = array_merge($output, _ac_md_slider_block_support($delta));
+      break;
+
+    case 'md_fullscreen_slider':
+      $output = array_merge($output, _ac_md_fullscreen_slider_block_support($delta));
+      break;
+
+    case 'md_portfolio':
+      break;
+
+    case 'md_pricing':
+      break;
+  }
+
+  return $output;
+}
+
+/**
+ * Callback process support for md_slider block
+ * @param $delta
+ *  Block delta
+ *
+ * @return array
+ */
+function _ac_md_slider_block_support($delta = '') {
+  $output = array();
+  $module_path = drupal_get_path('module', 'md_slider');
+
+  $slider = MDSlider::get_by_machine_name($delta);
+  if ($slider != NULL) {
+    $output = array('js' => array(), 'css' => array());
+    $output['js'][] = file_create_url($module_path . '/js/jquery.touchwipe.js', array('absolute' => TRUE));
+    $output['js'][] = file_create_url($module_path . '/js/modernizr.js', array('absolute' => TRUE));
+    if (variable_get("add_migrate", 0)) {
+      $output['js'][] = file_create_url($module_path . '/js/jquery-migrate-1.2.1.min.js', array('absolute' => TRUE));
+    }
+    $output['js'][] = file_create_url($module_path . '/js/jquery.easing.js', array('absolute' => TRUE));
+    $output['js'][] = file_create_url($module_path . '/js/md-slider.js', array('absolute' => TRUE));
+
+    // Add js control for slider
+    $in_effect = json_encode(MDCommon::$in_effects);
+    $out_effect = json_encode(MDCommon::$out_effects);
+    $js_control = "(function($) {
+      $(document).ready(function() {
+          effectsIn = {$in_effect};
+          effectsOut = {$out_effect};
+          var options_{$slider->slid} = Drupal.settings.md_slider_options_{$slider->slid};";
+
+    if (isset($slider->settings["on_start"]) && !empty($slider->settings["on_start"])) {
+      $js_control .= "options_{$slider->slid}.OnTransitionStart = {$slider->settings["on_start"]}";
+    }
+
+    if (isset($slider->settings["on_end"]) && !empty($slider->settings["on_end"])) {
+      $js_control .= "options_{$slider->slid}.OnTransitionEnd = {$slider->settings["on_end"]}";
+    }
+
+    $js_control .= "$('#md-slider-{$slider->slid}-block').mdSlider(options_{$slider->slid});
+      });
+    })(jQuery);";
+    $output['js'][] = array('data' => $js_control, 'type' => 'inline');
+
+    // Add css files
+    $output['css'][] = file_create_url($module_path . '/css/animate.css', array('absolute' => TRUE));
+    $output['css'][] = file_create_url($module_path . '/css/md-slider.css', array('absolute' => TRUE));
+    if (isset($slider->settings["generate_css_file"]) && !$slider->settings["generate_css_file"]) {
+      $output['css'][] = array(
+        'data' => variable_get("md_slider_{$slider->slid}_css"),
+        'type' => "inline"
+      );
+    }
+    else {
+      $output['css'][] = file_create_url("public://md-slider-{$slider->machine_name}-layers.css", array('absolute' => TRUE));
+    }
+
+    $output['css'][] = file_create_url(md_slider_load_css_file($slider->slid), array('absolute' => TRUE));
+
+    // Check width device and hide all object
+    $css = '';
+    if (isset($slider->settings['device_enable'])
+      && $slider->settings['device_enable'] == 1
+    ) {
+      $css .= '@media (max-width: ' . $slider->settings['device_width'] . 'px) {
+                #md-slider-' . $slider->slid . '-block .md-objects {
+                  display: none;
+                }
+              }';
+    }
+
+    if (isset($slider->settings['device_width'])
+      && $slider->settings['device_width'] != ''
+    ) {
+      $css .= '@media (max-width: ' . $slider->settings['device_width'] . 'px) {
+                .hideonmobile {
+                  display: none !important;
+                }
+              }';
+    }
+
+    if ($css) {
+      $output['css'][] = array('data' => $css, 'type' => "inline");
+    }
+  }
+
+  return $output;
+}
+
+/**
+ * @param string $delta
+ *  Block delta
+ * @return array
+ */
+function _ac_md_fullscreen_slider_block_support($delta = '') {
+  $output = array();
+
+  $path = drupal_get_path('module', 'md_fullscreen_slider');
+
+  if ($delta) {
+    $output = array('js' => array(), 'css' => array());
+
+    $slides = array();
+    $slider = MDFullScreenSlider::get_by_machine_name($delta);
+    if ($slider) {
+      $slides = MDFullScreenSlide::get_by_sid($slider->id);
+    }
+
+    if ($slides && is_array($slides)) {
+      // Add css files
+      $output['css'][] = file_create_url("{$path}/js/front/css/mdf-fullscreen-slider.css", array('absolute' => TRUE));
+      $css_file = fullscreen_slider_load_css_file($slider->id, TRUE);
+      if ($css_file) {
+        $output['css'][] = file_create_url($css_file, array('absolute' => TRUE));
+      }
+      $output['css'][] = file_create_url("{$path}/js/front/css/animate.css", array('absolute' => TRUE));
+      $output['css'][] = file_create_url("{$path}/js/front/css/animations.css", array('absolute' => TRUE));
+      $output['css'][] = file_create_url("{$path}/js/front/css/component.css", array('absolute' => TRUE));
+      $output['css'][] = file_create_url("{$path}/js/front/css/jqvideobox.css", array('absolute' => TRUE));
+
+      if (!$slider->settings["generate_css_file"]) {
+        $slider_settings_css = variable_get("fullscreen_slider_{$slider->id}_css", "");
+        $output['css'][] = array(
+          'data' => $slider_settings_css,
+          'type' => "inline"
+        );
+      }
+      else {
+        $output['css'][] = file_create_url("public://mdf-fullscreen-slider-{$slider->id}-setting.css", array('absolute' => TRUE));
+      }
+
+      // Add js files
+      $output['js'][] = file_create_url("{$path}/js/front/jquery.touchwipe.js", array('absolute' => TRUE));
+      $output['js'][] = file_create_url("{$path}/js/front/jquery.easing.js", array('absolute' => TRUE));
+      $output['js'][] = file_create_url("{$path}/js/front/modernizr.custom.js", array('absolute' => TRUE));
+      $output['js'][] = file_create_url("{$path}/js/front/flowtype.js", array('absolute' => TRUE));
+      $output['js'][] = file_create_url("{$path}/js/front/mdf-fullscreen-slider.js", array('absolute' => TRUE));
+      $output['js'][] = file_create_url("{$path}/js/front/mdf-css3-transitions.js", array('absolute' => TRUE));
+      if (variable_get("show_preload", FALSE)) {
+        $output['js'][] = file_create_url("{$path}/js/front/jquery.queryloader2.js", array('absolute' => TRUE));
+        $output['js'][] = file_create_url("{$path}/js/front/fullscreen-loader.js", array('absolute' => TRUE));
+      }
+
+      // create js to control for slider
+      $js = sprintf(
+        '(function($) {
+          $(document).ready(function() {
+            %s
+            $(window).resize(function() {
+              var $sliderWrap = $("#mdf-fullscreen-%d"),
+                  width = $sliderWrap.parents(".awe-col-wrapper:first").width();
+
+              $(".mdf-slide-item", $sliderWrap).css({height: $(window).height(), width: width});
+            }).trigger("resize");
+          });
+        })(jQuery)',
+        _fullscreen_generate_control_slider_js($slider, TRUE),
+        $slider->id
+      );
+
+      $output['js'][] = array('data' => $js, 'type' => "inline");
+
+      // Load custom font
+      if (!$slider->settings["dont_include_font"] && $slider->settings["use_google_font"] && !empty($slider->settings["google_font"])) {
+        $output['css'][] = $slider->settings['google_font'];
+      }
+      if (!$slider->settings["dont_include_font"] && $slider->settings["use_typekit"] && !empty($slider->settings["typekit_id"])) {
+        $output['js'][] = "http://use.typekit.net/{$slider->settings["typekit_id"]}.js";
+        $output['js'][] = array(
+          'data' => "try{Typekit.load();}catch(e){}",
+          'type' => "inline"
+        );
+      }
+    }
+  }
+  return $output;
+}
+
+function awecontent_get_theme_templates($type = SECTION_TEMPLATE, $index_by_tid = FALSE) {
+  global $user;
+  $active_theme = variable_get('theme_default', 'bartik');
+  $theme_path = drupal_get_path('theme', $active_theme);
+  $template_file = sprintf('%s/awecontent-templates/awecontent_templates.inc', $theme_path);
+  $templates = array();
+  $templates_by_id = array();
+
+  if (file_exists($template_file)) {
+    require_once($template_file);
+
+    $template_function = "{$active_theme}_awecontent_templates";
+    if (function_exists($template_function)) {
+      $templates = $template_function($type);
+
+      // get favourite templates of current user
+      if ($type == SECTION_TEMPLATE) {
+        $favourites = db_select('awecontent_favourite_templates', 'fav')
+          ->fields('fav', array('tid'))
+          ->condition('uid', $user->uid)
+          ->execute()->fetchAllAssoc('tid');
+        $favourites = array_keys($favourites);
+      }
+
+      // prepare templates data
+      foreach ($templates as &$template) {
+        $template['thumbnail'] = file_create_url(sprintf('%s/awecontent-templates/%s', $theme_path, $template['thumbnail']));
+        $template['tid'] = sprintf('%s_%d', $active_theme, $template['tid']);
+        $template['data'] = trim(_awecontent_get_template_data("{$theme_path}/awecontent-templates/{$template['data']}"));
+        $template['category'] = (isset($template['category']) && trim($template['category'])) ? trim($template['category']) : t('Theme');
+
+        if ($type == SECTION_TEMPLATE)
+          $template['favourite'] = (in_array($template['tid'], $favourites) !== FALSE) ? 1 : 0;
+
+        $template = (object)$template;
+        $templates_by_id[$template->tid] = $template;
+      }
+    }
+  }
+
+  // return list templates index by tid
+  if ($index_by_tid)
+    return $templates_by_id;
+
+  return $templates;
+}
+
+/**
+ * Callback to get template data from file
+ */
+function _awecontent_get_template_data($file_path) {
+  $file = fopen($file_path, 'r');
+  if ($file) {
+    $data = fread($file, filesize($file_path));
+    fclose($file);
+    return $data;
+  }
+
+  return '';
+}
+
+/**
+ * Callback to check permission
+ */
+function _awecontent_check_permission($permission = '', $user = NULL) {
+  if (user_access(ADMIN_PERM, $user)) {
+    return TRUE;
+  }
+
+  return user_access($permission, $user);
+}
+
+/**
+ * Callback to get list objects item
+ */
+function awecontent_get_objects_item($without_perms=FALSE) {
+  // call all hook awecontent_objects_info
+  $active_theme = variable_get('theme_default', 'bartik');
+  $short_codes = module_invoke_all('awecontent_objects_info');
+  if (function_exists("{$active_theme}_awecontent_objects_info")) {
+    $short_codes = array_merge($short_codes, call_user_func("{$active_theme}_awecontent_objects_info"));
+  }
+
+  // invoke all alter of shortcodes
+  drupal_alter('awecontent_objects_info', $short_codes);
+  $theme_alter_func = "{$active_theme}_awecontent_objects_info_alter";
+  if (function_exists($theme_alter_func)) {
+    $theme_alter_func($short_codes);
+  }
+
+  // check to show icon object
+  if (!module_exists('icon') && !module_exists('fontawesome')) {
+    unset($short_codes['icon']);
+  }
+
+  // check permission for objects
+  if (module_exists('awecontent_permission') && !$without_perms) {
+    // get user permission
+    $user_permissions = awecontent_user_permissions();
+
+    // check objects by permissions
+    foreach ($short_codes as $obj_name => $object) {
+      if ((!isset($user_permissions["awe_item_{$obj_name}"]) || !$user_permissions["awe_item_{$obj_name}"]) && !in_array($obj_name, array('drupal_block', 'drupal_field')))
+        unset($short_codes[$obj_name]);
+    }
+  }
+
+  return $short_codes;
+}
+
+/**
+ * callback get list blocks allow to drag
+ */
+function awecontent_get_blocks_item() {
+  // get list blocks
+  $blocks = _block_rehash();
+
+  // get user permissions
+  if (module_exists('awecontent_permission')) {
+    $user_permissions = awecontent_user_permissions();
+
+    // check block which allows to show for user
+    foreach ($blocks as $bid => $block) {
+      if (!isset($user_permissions["{$block['module']}_{$block['delta']}"]) || !$user_permissions["{$block['module']}_{$block['delta']}"])
+        unset($blocks[$bid]);
+    }
+  }
+
+  return $blocks;
+}
+
+/**
+ * callback to load objects library
+ */
+function awecontent_objects_libraries_load($frontend = TRUE) {
+  $short_codes = awecontent_get_objects_item();
+  foreach ($short_codes as $short_code) {
+    if (isset($short_code['js']) && is_array($short_code['js']) && !empty($short_code['js'])) {
+      foreach ($short_code['js'] as $js_data => $options) {
+        if (isset($option['frontend']) && $option['frontend'])
+          drupal_add_js($js_data, $options);
+      }
+    }
+
+    if (isset($short_code['css']) && is_array($short_code['css']) && !empty($short_code['css'])) {
+      foreach ($short_code['css'] as $css => $options) {
+        if (isset($option['frontend']) && $option['frontend'])
+          drupal_add_css($css, $options);
+      }
+    }
+  }
+}
+
+/**
+ * implements hook_is_alter
+ */
+function awecontent_js_alter(&$js) {
+  $add_node_condition = strpos(current_path(), 'node/add') !== FALSE;
+  $edit_node_condition = (arg(0) == 'node' && is_numeric(arg(1)) && arg(2) == 'edit');
+  $file_ajax_page = strpos(current_path(), 'file/ajax') !== FALSE;
+
+  if ($edit_node_condition || $add_node_condition || $file_ajax_page) {
+    if (module_exists('colorbox')) {
+      unset($js[drupal_get_path('module', 'colorbox').'/js/colorbox.js']);
+    }
+  }
+}

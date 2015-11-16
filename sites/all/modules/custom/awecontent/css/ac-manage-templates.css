@@ -1,0 +1,304 @@
+.md-awecontent-section {
+    width: 100%;
+    overflow: auto;
+}
+.md-awecontent-section * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.md-section-list-filter {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.md-section-list-filter ul {
+    padding: 0;
+    list-style: none;
+    text-align: center;
+}
+.md-section-list-filter ul li {
+    display: inline-block;
+    margin: 0 20px;
+}
+.md-section-list-filter ul li a{
+    text-decoration: none;
+}
+.md-section-list-filter ul li a:link{
+    padding: 2px 15px;
+    border: 1px solid transparent;
+}
+.md-section-list-filter ul li a.md-section-filter-active,
+.md-section-list-filter ul li a:hover{
+    border: 1px solid #ccc;
+}
+.md-section-list-grid {
+    margin-top: 50px;
+}
+.md-section-list-grid ul {
+    margin: 0 !important;
+}
+.md-section-list-grid ul:after {
+    content: '';
+    display: block;
+    clear: both;
+}
+.md-section-list-grid ul li {
+    display: inline-block;
+    float: left;
+    min-width: 350px;
+    width: 25%;
+    padding: 20px 15px;
+}
+.md-section-list-grid ul li .item {
+    position: relative;
+}
+.md-section-list-grid ul li .md-awe-img {
+    height: 200px;
+    width: 100%;
+}
+
+.md-section-list-grid ul li .md-awe-fav {
+    background: url('../images/star-default.png') no-repeat 50% 50%;
+    right: 25px;
+}
+
+.md-section-list-grid ul li .md-awe-edit {
+    background: url('../images/edit.png') no-repeat 50% 50%;
+    right: 50px;
+}
+
+.md-section-list-grid ul li .md-awe-fav.md-awe-fav-active {
+    background: url('../images/star-favorite.png') no-repeat 50% 50%;
+}
+
+.md-section-list-grid ul li .md-awe-clone {
+    background: url('../images/clone.png') no-repeat 50% 50%;
+    right: 0;
+}
+
+.md-section-list-grid ul li .md-awe-del {
+    background: url('../images/del.png') no-repeat 50% 50%;
+    left: 0;
+}
+
+.md-section-list-grid ul li .md-awe-del,
+.md-section-list-grid ul li .md-awe-edit,
+.md-section-list-grid ul li .md-awe-fav,
+.md-section-list-grid ul li .md-awe-clone {
+    position: absolute;
+    width: 20px; height: 20px;
+    top: 0;
+    opacity: 0;
+    visibility: hidden;
+    font-size: 0;
+    border: 1px solid #999;
+    color: transparent;
+    background-size: 18px;
+    -webkit-transition: all .3s ease;
+    -moz-transition: all .3s ease;
+    -ms-transition: all .3s ease;
+    -o-transition: all .3s ease;
+    transition: all .3s ease;
+}
+.md-section-list-grid ul li:hover .md-awe-del,
+.md-section-list-grid ul li:hover .md-awe-edit,
+.md-section-list-grid ul li:hover .md-awe-fav,
+.md-section-list-grid ul li:hover .md-awe-clone {
+    top: -25px;
+    opacity: 1;
+    visibility: visible;
+}
+.md-section-overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+    display: block;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 2;
+}
+
+.md-section-overlay .md-section-popup {
+    width: 400px;
+    height: 200px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    background-color: white;
+}
+
+.md-section-overlay .md-section-popup .md-section-popup-select {
+    border-top: 1px solid #ccc;
+    bottom: 0;
+    overflow: auto;
+    position: absolute;
+    width: 100%;
+}
+
+.md-section-overlay .md-section-popup p {
+    font-size: 18px;
+    margin: 50px 0;
+    text-align: center;
+}
+
+.md-section-overlay .md-section-popup .md-section-popup-select a {
+    border: 1px solid #ccc;
+    display: inline-block;
+    float: right;
+    font-size: 14px;
+    margin: 15px 10px 15px 0;
+    padding: 5px 20px;
+    text-decoration: none;
+    text-transform: capitalize;
+}
+
+.md-section-overlay .md-section-popup .md-section-popup-select a:hover {
+    background-color: #ccc;
+    border: 1px solid #333;
+}
+
+.md-awecontent-section .md-section-message {
+    display: block;
+    position: fixed;
+    top: 20%;
+    left: 0;
+    background-color: white;
+    color: red;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-100%);
+    -webkit-transform: translateX(-100%);
+    -moz-transform: translateX(-100%);
+    -ms-transform: translateX(-100%);
+    -o-transform: translateX(-100%);
+    transition: all .5s linear;
+    -webkit-transition: all .5s linear;
+    -moz-transition: all .5s linear;
+    -ms-transition: all .5s linear;
+    -o-transition: all .5s linear;
+}
+
+.md-awecontent-section .md-section-message p {
+    margin: 0;
+    padding: 5px 10px;
+    border: 1px solid #cccccc;
+}
+
+.md-awecontent-section .md-section-message.md-section-message-show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    -webkit-transform: translateY(0);
+    -moz-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+}
+
+#md-awecontent-section {
+    position: relative;
+    z-index: 9;
+}
+.md-awecontent-section .md-section-loadmore-warrap {
+    position: relative;
+    text-transform: uppercase;
+    z-index: 1;
+    text-align: center;
+
+}
+.md-awecontent-section .md-section-loadmore-warrap a {
+    background: none repeat scroll 0 0 white;
+    text-decoration: none;
+    border: 1px solid #333;
+    padding: 7px 30px;
+    display: inline-block;
+}
+.md-awecontent-section .md-section-loadmore-warrap a:hover{
+    background-color: #ccc;
+}
+
+.md-awecontent-section .md-section-export-warrap {
+    background: none repeat scroll 0 0 white;
+    border: 1px solid #333;
+    bottom: 10px;
+    padding: 7px 30px;
+    position: fixed;
+    right: 10px;
+    text-transform: uppercase;
+    z-index: 1;
+}
+.md-awecontent-section .md-section-export-warrap a {
+    text-decoration: none;
+}
+.md-awecontent-section .md-section-export-warrap:hover{
+    background-color: #ccc;
+}
+.md-section-list-grid ul li .section_item {
+    height: 200px;
+}
+.md-section-list-grid ul li .page_item {
+    width: 300px;
+    height: 450px;
+}
+
+.awe-template-add {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn.active.focus {
+    outline: thin dotted;
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
+}
+.btn:hover,
+.btn:focus,
+.btn.focus {
+    color: #333;
+    text-decoration: none;
+}
+.btn:active,
+.btn.active {
+    background-image: none;
+    outline: 0;
+    -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+}
+.btn.btn-blue {
+    background-color: #0099FF;
+    color: #ffffff;
+}
+

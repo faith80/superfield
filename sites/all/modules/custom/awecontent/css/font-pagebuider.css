@@ -1,0 +1,111 @@
+@font-face {
+	font-family: 'page-buider';
+	src:url('../fonts/page-buider.eot?ay0u6a');
+	src:url('../fonts/page-buider.eot?#iefixay0u6a') format('embedded-opentype'),
+		url('../fonts/page-buider.woff?ay0u6a') format('woff'),
+		url('../fonts/page-buider.ttf?ay0u6a') format('truetype'),
+		url('../fonts/page-buider.svg?ay0u6a#page-buider') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="ic-"], [class*=" ic-"] {
+	/*font-family: 'page-buider';*/
+	display: inline-block;
+  	font: normal normal normal 14px/1 'page-buider';
+  	font-size: inherit;
+  	text-rendering: auto;
+  	-webkit-font-smoothing: antialiased;
+  	-moz-osx-font-smoothing: grayscale;
+}
+
+.ic-abstract:before {
+	content: "\e600";
+}
+.ic-add:before {
+	content: "\e601";
+}
+.ic-center:before {
+	content: "\e602";
+}
+.ic-column:before {
+	content: "\e603";
+}
+.ic-creat-col:before {
+	content: "\e604";
+}
+.ic-driver:before {
+	content: "\e605";
+}
+.ic-facebook:before {
+	content: "\e606";
+}
+.ic-flickr:before {
+	content: "\e607";
+}
+.ic-fly:before {
+	content: "\e608";
+}
+.ic-header:before {
+	content: "\e609";
+}
+.ic-iframe:before {
+	content: "\e60a";
+}
+.ic-image:before {
+	content: "\e60b";
+}
+.ic-justify:before {
+	content: "\e60c";
+}
+.ic-left:before {
+	content: "\e60d";
+}
+.ic-list-num:before {
+	content: "\e60e";
+}
+.ic-list-square:before {
+	content: "\e60f";
+}
+.ic-local:before {
+	content: "\e610";
+}
+.ic-message:before {
+	content: "\e611";
+}
+.ic-relationship:before {
+	content: "\e612";
+}
+.ic-right:before {
+	content: "\e613";
+}
+.ic-split:before {
+	content: "\e614";
+}
+.ic-tab:before {
+	content: "\e615";
+}
+.ic-table:before {
+	content: "\e616";
+}
+.ic-text:before {
+	content: "\e617";
+}
+.ic-trash:before {
+	content: "\e618";
+}
+.ic-twin:before {
+	content: "\e619";
+}
+.ic-twitter:before {
+	content: "\e61a";
+}
+.ic-unkown1:before {
+	content: "\e61b";
+}
+.ic-upload:before {
+	content: "\e61c";
+}
+.ic-video:before {
+	content: "\e61d";
+}

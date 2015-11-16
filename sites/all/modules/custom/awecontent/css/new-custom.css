@@ -1,0 +1,75 @@
+.awe-custom.custom-obj.active {
+    opacity: 1;
+    visibility: visible;
+}
+.awe-custom.custom-wrap.active {
+    opacity: 1;
+    visibility: visible;
+}
+.awe-custom.custom-section.active{
+    opacity: 1;
+    visibility: visible;
+    left :0;
+}
+
+.page-awe-content-template-layout-1 .custom-section .cus-show-more,
+.page-awe-content-template-layout-1 .add-section {
+    display: none
+}
+.awe-iframe-overlay {
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    z-index: 999;
+}
+.awe-drupal-block-item .js-clone-item,
+.awe-drupal-field-item .js-clone-item {
+    display: none;
+}
+.awe-item-unload .js-clone-item,
+.awe-item-unload .js-edit-item,
+.awe-item-unload .js-obj-move {
+    display: none;
+}
+
+/* Fix video thumbnail */
+.thumb-video {
+    display: inline-block;
+    position: relative;
+    z-index: 99;
+}
+
+.thumb-video .play-control {
+    color: #fff;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    cursor: pointer;
+    -webkit-transition: background 0.25s ease-in-out;
+       -moz-transition: background 0.25s ease-in-out;
+         -o-transition: background 0.25s ease-in-out;
+            transition: background 0.25s ease-in-out;
+}
+
+.thumb-video .play-control:hover,
+.thumb-video .play-control:focus {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+.thumb-video .play-control > i,
+.thumb-video .play-control > span {
+    display: inline-block;
+    font-size: 70px;
+    height: 70px;
+    left: 50%;
+    line-height: 1;
+    margin-left: -35px;
+    margin-top: -35px;
+    position: absolute;
+    text-shadow: 1px 1px 1px #333;
+    top: 50%;
+    width: 70px;
+    z-index: 101;
+}

@@ -1,0 +1,7 @@
+name = AWEContent Themer
+description = Support to export section and page template for theme developer.
+core = 7.x
+version = 7.x-1.0
+package = MegaDrupal
+
+dependencies[] = awecontent

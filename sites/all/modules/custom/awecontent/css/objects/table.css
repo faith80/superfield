@@ -1,0 +1,53 @@
+.awe-table table    { display: table; }
+.awe-table thead    { display: table-header-group; }
+.awe-table tbody    { display: table-row-group; }
+.awe-table tfoot    { display: table-footer-group; }
+.awe-table tr       { display: table-row; }
+.awe-table col      { display: table-column; }
+.awe-table caption  { display: table-caption; }
+.awe-table colgroup { display: table-column-group; }
+.awe-table td, .awe-table th { display: table-cell; }
+
+.awe-table {
+    position: relative;
+}
+.awe-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.awe-table caption {
+    width: 100%;
+    display: table-caption;
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.awe-table table {
+    /*background-color: #EEEEEE;*/
+}
+.awe-table th , .awe-table td {
+    height: 60px;
+    padding: 0;
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+}
+.awe-table th , .awe-table td {
+    height: 60px;
+    padding: 0;
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+}
+.awe-table td, .awe-table th {
+    border: 1px solid #A6A6A6;
+}
+.awe-table thead th,
+.awe-table tbody td,
+.awe-table tfoot td {
+    /*width: 1%;*/
+}
+.awe-table tbody {
+    position: relative;
+}
+.awe-table .ui-resizable-handle.ui-resizable-e {}
